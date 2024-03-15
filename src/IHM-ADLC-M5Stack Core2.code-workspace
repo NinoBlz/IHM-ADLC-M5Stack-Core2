@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"name": "IHM-ADLC-M5Stack Core2",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"istream": "cpp",
+			"ostream": "cpp"
+		}
+	}
+}

@@ -4,7 +4,9 @@
 #include "UserManager.h"
 #include <string>
 #include "menu.h"
+#include "NumericKeypad.h"
 
+NumericKeypad keypad;
 Clavier clavier;
 UserManager userManager; // Déclaration de userManager pour l'utiliser dans toute la fonction
 String identifiant;
@@ -45,14 +47,25 @@ void loop() {
   menuPrincipalLoop();
   int selection = menuPrincipalLoop();
   int identificationreussi;
-
+  
   if (selection == 1) {
+    keypad.setup(); // Décommentez cette ligne pour initialiser le clavier numérique
+    keypad.loop();
+    String inputText = "";
+    while (inputText.length() != 8) { // Attendre jusqu'à ce que l'utilisateur entre 8 caractères
+      inputText = keypad.loop(); // Récupérer le texte saisi
+      delay(100); // Ajouter un léger délai pour éviter la surcharge de l'UC
+    }
+    
+/*
+
+  
     identification(); // Appel de la fonction d'identification modifiée
       if (identificationreussi == true){
         menuIdentificationReussi();
         
       }
-
+*/
   }
 
   if (selection == 2) {

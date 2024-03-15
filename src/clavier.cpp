@@ -6,7 +6,7 @@ void Clavier::setup() {
   M5.begin();
   M5.Lcd.fillScreen(BLACK);
   M5.Lcd.setTextColor(WHITE, BLACK);
-  drawKeyboard(keysUpper); // Commence avec le clavier des lettres en majuscules
+  drawKeyboard(keysLower); // Commence avec le clavier des lettres en majuscules
 }
 
 
