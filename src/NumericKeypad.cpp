@@ -134,7 +134,7 @@ String NumericKeypad::loop() {
         // Vérifie si le bouton A est pressé pour supprimer le dernier caractère
         if (M5.BtnA.wasPressed()) {
             if (inputText.length() > initialText.length()) { // Empêche l'effacement du texte initial
-                inputText.remove(inputText.length() - 1);
+                inputText.remove(inputText.length() - 1); 
                 updateDisplay(); // Mettre à jour l'affichage après avoir supprimé un caractère
             }
         }
