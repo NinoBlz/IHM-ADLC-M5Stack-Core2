@@ -1,26 +1,33 @@
-#include "clavier.h"
+//#include "clavier.h"
 #include <M5Core2.h>
 #include "menuPrincipal.h"
 #include "UserManager.h"
 #include <string>
 #include "menu.h"
 #include "NumericKeypad.h"
+#include "ClavierNumerique.h"
+
 
 NumericKeypad keypad;
-Clavier clavier;
+//Clavier clavier;
+ClavierNumerique clavier;
+
+
 UserManager userManager; // Déclaration de userManager pour l'utiliser dans toute la fonction
 String identifiant;
 String MDP;
 
 void setup() {
-  clavier.setup();
+
+
+  //clavier.setup();
   M5.begin();
   menuPrincipalSetup();
   Serial.begin(115200);
 
   // Initialisation du UserManager dans le setup n'est plus nécessaire ici car c'est fait globalement
 }
-
+/*
 void identification() {
     menuPrincipalSetup();
     delay (500);
@@ -42,12 +49,30 @@ void identification() {
         Serial.println("Identification non réussie");
     }
 }
+*/
+
+
 
 void loop() {
   menuPrincipalLoop();
   int selection = menuPrincipalLoop();
   int identificationreussi;
   
+
+  if (selection == 1) {
+    delay(500);
+      String saisie = clavier.recupererSaisie();
+  /*
+  if (saisie != "") {
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setCursor(0, 0);
+    M5.Lcd.print("POI : " + saisie);
+
+    }
+    */
+  }
+
+/*
   if (selection == 1) {
     keypad.setup(); // Décommentez cette ligne pour initialiser le clavier numérique
     keypad.loop();
@@ -56,7 +81,8 @@ void loop() {
       inputText = keypad.loop(); // Récupérer le texte saisi
       delay(100); // Ajouter un léger délai pour éviter la surcharge de l'UC
     }
-    
+*/
+  
 /*
 
   
@@ -66,11 +92,12 @@ void loop() {
         
       }
 */
-  }
+  
 
   if (selection == 2) {
   M5.Axp.DeepSleep();
   }
 
-  delay(1000); // Attente de 1 seconde avant la prochaine itération de loop
+  delay(200); // Attente de 1 seconde avant la prochaine itération de loop
+
 }
