@@ -5,7 +5,6 @@ ClavierNumerique::ClavierNumerique() {
 }
 
 
-
 void ClavierNumerique::afficherClavier() {
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.setTextColor(BLACK, WHITE);
@@ -20,12 +19,13 @@ void ClavierNumerique::afficherClavier() {
         }
     }
     
-    // Dessiner la touche 0 au milieu de la dernière rangée, en supprimant A, B, C
     dessinerTouche(startX + toucheWidth + espace, startY + 3*(toucheHeight + espace), "0");
     M5.Lcd.setTextSize(2);
 }
 
 void ClavierNumerique::dessinerTouche(int x, int y, const char* label) {
+    M5.Lcd.setTextSize(3);
+
     // D'abord, remplir le rectangle avec la couleur noire pour le fond de la touche
     M5.Lcd.fillRect(x, y, toucheWidth, toucheHeight, BLACK);
     

@@ -2,7 +2,7 @@
 #include "menuPrincipal.h"
 
 // Variables pour stocker les coordonnées du point de pression
-int16_t x, y;
+int x, y;
 
 // Fonctions vides pour les boutons
 int fonction1() {
