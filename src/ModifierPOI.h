@@ -10,7 +10,8 @@ public:
 
 private:
     String StringValeurPOI = "--------";
-    String Status = "Deconnecte";
+    //bool Status = "Deconnecte";
+    bool StatusState = false;
     int ValeurPOI;
     void DrawButton();
     void Clear();

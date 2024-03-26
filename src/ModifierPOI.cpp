@@ -4,6 +4,7 @@
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
     delay(1000);
+    StatusState = false;
     ValeurPOI = ValeurPOIinitial; 
     if (ValeurPOI != 0) {
         StringValeurPOI = String(ValeurPOI); // Met à jour StringValeurPOI
@@ -36,9 +37,12 @@ void ModifierPOI::DrawButton() {
 
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-
-    M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN); // Status
-    M5.Lcd.drawString("Status : " + Status, 55, 12);
+    if (StatusState == true){
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN);  // Status 
+    M5.Lcd.drawString("Status : Connecte", 55, 12);}
+    else {
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED);  // Status  
+    M5.Lcd.drawString("Status : Deconecte" , 55, 12);}
 
     M5.Lcd.setTextColor(TFT_BLACK);
     M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
@@ -48,7 +52,7 @@ void ModifierPOI::DrawButton() {
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
     M5.Lcd.drawString("Connection", 55, 95);
-
+   
     M5.Lcd.fillRoundRect(20, 130, 280, 50, 8, TFT_PURPLE); // Bouton Modifier POI
     M5.Lcd.drawString("Modifier POI", 55, 150);
 
