@@ -34,8 +34,6 @@ void loop() {
 
   if (selection == 1) {
     POI.Setup(12345678);
-    delay(1000);
-    POI.Loop();
-delay(1000);
+  delay(1000);
   }
 }
