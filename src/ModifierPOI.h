@@ -9,6 +9,7 @@ public:
     String GetStringValeurPOI(); // Méthode pour récupérer StringValeurPOI
 
 private:
+    void writeEEPROM(byte data[], int dataLength);
     String StringValeurPOI = "--------";
     //bool Status = "Deconnecte";
     bool StatusState = false;

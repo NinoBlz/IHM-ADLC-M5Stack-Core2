@@ -1,5 +1,13 @@
 #include <M5Core2.h>
 #include "ModifierPOI.h"
+#include <OneWire.h>
+
+
+// Pin connected to the DS2431 OneWire bus
+#define ONE_WIRE_PIN 10
+
+// OneWire bus
+OneWire oneWire(ONE_WIRE_PIN);
 
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
@@ -32,6 +40,49 @@ void ModifierPOI::Clear() {
     M5.Lcd.fillScreen(TFT_BLACK);
 }
 
+
+
+
+
+void writeEEPROM(byte data[], int dataLength) {
+  byte addr[8]; // To store the address of the DS2431 chip
+
+  if (!oneWire.search(addr)) {
+    Serial.println("No devices found on the OneWire bus!");
+    return;
+  }
+
+  // Select the DS2431 chip
+  oneWire.reset();
+  oneWire.select(addr);
+
+  // Write Scratchpad command followed by target address and data
+  oneWire.write(0x0F); // Write Scratchpad command
+  oneWire.write(0x00); // Target address high byte
+  oneWire.write(0x00); // Target address low byte
+  for (int i = 0; i < dataLength; i++) {
+    oneWire.write(data[i]); // Write data byte by byte
+  }
+
+  // Copy Scratchpad to EEPROM
+  oneWire.write(0x55); // Copy Scratchpad command
+
+  Serial.println("Data written to EEPROM.");
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void ModifierPOI::DrawButton() {
     M5.Lcd.fillScreen(TFT_BLACK);
 
@@ -63,6 +114,11 @@ void ModifierPOI::DrawButton() {
 int ModifierPOI::Loop() {
     DrawButton();
 
+
+    byte data[] = {0x01, 0x02, 0x03, 0x04};
+    writeEEPROM(data, sizeof(data));
+
+
     while (true) {
         if (M5.Touch.ispressed()) {
             // Récupération des coordonnées tactiles
@@ -75,6 +131,7 @@ int ModifierPOI::Loop() {
                 if (y > 75 && y < 125) {
                     // Bouton Connection pressé
                     Clear();
+                    
                     return 1;
                 } else if (y > 130 && y < 180) {
                     // Bouton Modifier POI pressé
