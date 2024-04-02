@@ -1,5 +1,12 @@
 // ModifierPOI.cpp
 #include "ModifierPOI.h"
+#include "ClavierNumerique.h"
+#include <Arduino.h>
+
+
+ClavierNumerique Clavier;
+
+
 
 // Pin connected to the DS2431 OneWire bus
 #define ONE_WIRE_PIN 27
@@ -9,15 +16,17 @@ OneWire oneWire(ONE_WIRE_PIN);
 
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
-    delay(1000);
+    delay(500);
     StatusState = false;
     ValeurPOI = ValeurPOIinitial; 
     if (ValeurPOI != 0) {
         StringValeurPOI = String(ValeurPOI); // Met à jour StringValeurPOI
     }
 
-    Serial.println("la valeur du POI en int (ValeurPOIinitial) =" + ValeurPOIinitial);
-    Serial.println("la valeur du POI en int (ValeurPOI) =" + ValeurPOI);
+    Serial.print("la valeur du POI en int (ValeurPOIinitial) = ");
+    Serial.println(ValeurPOIinitial);
+    Serial.print("la valeur du POI en int (ValeurPOI) = ");
+    Serial.println(ValeurPOI);
     Serial.println("la valeur du POI en String (StringValeurPOI) =" + StringValeurPOI);
 
     Loop();
@@ -104,6 +113,7 @@ int ModifierPOI::Loop() {
     writeEEPROM(data, sizeof(data));
 
     while (true) {
+
         if (M5.Touch.ispressed()) {
             // Récupération des coordonnées tactiles
             Point p = M5.Touch.getPressPoint();
@@ -119,7 +129,15 @@ int ModifierPOI::Loop() {
                 } else if (y > 130 && y < 180) {
                     // Bouton Modifier POI pressé
                     Clear();
-                    return 2;
+                    Serial.println("test saisi 1");
+                    StringValeurPOI = Clavier.recupererSaisie();
+                    Serial.println("la valeur du POI a été saisi via le clavier : " + StringValeurPOI);
+                    ValeurPOI = StringValeurPOI.toInt();
+                    Serial.print("valeur converetir après la saisi : ");
+                    Serial.println(ValeurPOI);
+
+                    Clear();
+                    DrawButton();
                 } else if (y > 185 && y < 235) {
                     // Bouton Déconnexion pressé
                     Clear();
@@ -130,4 +148,3 @@ int ModifierPOI::Loop() {
         delay(100);
     }
 }
-    

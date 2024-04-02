@@ -5,6 +5,7 @@
 #include <Arduino.h>
 #include <M5Core2.h>
 #include <OneWire.h>
+#include "ClavierNumerique.h"
 
 class ModifierPOI {
 public:
