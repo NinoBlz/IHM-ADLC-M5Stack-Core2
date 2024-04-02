@@ -1,10 +1,8 @@
-#include <M5Core2.h>
+// ModifierPOI.cpp
 #include "ModifierPOI.h"
-#include <OneWire.h>
-
 
 // Pin connected to the DS2431 OneWire bus
-#define ONE_WIRE_PIN 10
+#define ONE_WIRE_PIN 27
 
 // OneWire bus
 OneWire oneWire(ONE_WIRE_PIN);
@@ -40,48 +38,34 @@ void ModifierPOI::Clear() {
     M5.Lcd.fillScreen(TFT_BLACK);
 }
 
+void ModifierPOI::writeEEPROM(byte* data, int dataSize) {
+    oneWire.reset();
+    oneWire.write(0x55); // Match ROM
+    oneWire.skip(); // Skip ROM
+    oneWire.write(0x0F); // Write Scratchpad command
 
+    for (int i = 0; i < dataSize; i++) {
+        oneWire.write(data[i]);
+    }
 
-
-
-void writeEEPROM(byte data[], int dataLength) {
-  byte addr[8]; // To store the address of the DS2431 chip
-
-  if (!oneWire.search(addr)) {
-    Serial.println("No devices found on the OneWire bus!");
-    return;
-  }
-
-  // Select the DS2431 chip
-  oneWire.reset();
-  oneWire.select(addr);
-
-  // Write Scratchpad command followed by target address and data
-  oneWire.write(0x0F); // Write Scratchpad command
-  oneWire.write(0x00); // Target address high byte
-  oneWire.write(0x00); // Target address low byte
-  for (int i = 0; i < dataLength; i++) {
-    oneWire.write(data[i]); // Write data byte by byte
-  }
-
-  // Copy Scratchpad to EEPROM
-  oneWire.write(0x55); // Copy Scratchpad command
-
-  Serial.println("Data written to EEPROM.");
+    oneWire.reset();
+    oneWire.write(0x55); // Match ROM
+    oneWire.skip(); // Skip ROM
+    oneWire.write(0xAA); // Copy Scratchpad command
+    oneWire.write(0x5A); // Copy Scratchpad parameter
 }
 
+void ModifierPOI::readEEPROM(byte* data, int dataSize) {
+    oneWire.reset();
+    oneWire.write(0x55); // Match ROM
+    oneWire.skip(); // Skip ROM
+    oneWire.write(0xAA); // Read EEPROM command
+    oneWire.skip(); // Skip ROM
 
-
-
-
-
-
-
-
-
-
-
-
+    for (int i = 0; i < dataSize; i++) {
+        data[i] = oneWire.read();
+    }
+}
 
 void ModifierPOI::DrawButton() {
     M5.Lcd.fillScreen(TFT_BLACK);
@@ -90,10 +74,12 @@ void ModifierPOI::DrawButton() {
     M5.Lcd.setTextSize(2);
     if (StatusState == true){
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN);  // Status 
-    M5.Lcd.drawString("Status : Connecte", 55, 12);}
+        M5.Lcd.drawString("Status : Connecte", 55, 12);
+    }
     else {
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED);  // Status  
-    M5.Lcd.drawString("Status : Deconecte" , 55, 12);}
+        M5.Lcd.drawString("Status : Deconecte" , 55, 12);
+    }
 
     M5.Lcd.setTextColor(TFT_BLACK);
     M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
@@ -107,17 +93,15 @@ void ModifierPOI::DrawButton() {
     M5.Lcd.fillRoundRect(20, 130, 280, 50, 8, TFT_PURPLE); // Bouton Modifier POI
     M5.Lcd.drawString("Modifier POI", 55, 150);
 
-    M5.Lcd.fillRoundRect(20, 185, 280, 50, 8, TFT_RED); // Bouton Déconexion
+    M5.Lcd.fillRoundRect(20, 185, 280, 50, 8, TFT_RED); // Bouton Déconnexion
     M5.Lcd.drawString("Deconnexion", 55, 205);
 }
 
 int ModifierPOI::Loop() {
     DrawButton();
 
-
     byte data[] = {0x01, 0x02, 0x03, 0x04};
     writeEEPROM(data, sizeof(data));
-
 
     while (true) {
         if (M5.Touch.ispressed()) {
@@ -131,14 +115,13 @@ int ModifierPOI::Loop() {
                 if (y > 75 && y < 125) {
                     // Bouton Connection pressé
                     Clear();
-                    
                     return 1;
                 } else if (y > 130 && y < 180) {
                     // Bouton Modifier POI pressé
                     Clear();
                     return 2;
                 } else if (y > 185 && y < 235) {
-                    // Bouton Deconnexion pressé
+                    // Bouton Déconnexion pressé
                     Clear();
                     return 3;
                 }
@@ -147,3 +130,4 @@ int ModifierPOI::Loop() {
         delay(100);
     }
 }
+    
