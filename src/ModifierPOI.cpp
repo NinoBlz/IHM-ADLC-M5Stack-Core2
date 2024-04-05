@@ -1,18 +1,123 @@
-// ModifierPOI.cpp
 #include "ModifierPOI.h"
 #include "ClavierNumerique.h"
 #include <Arduino.h>
 
+#include <DS2431.h>
+#include <OneWire.h>
+
+const int ONE_WIRE_PIN = 27;
+
+OneWire oneWire(ONE_WIRE_PIN);
+DS2431 eeprom(oneWire);
 
 ClavierNumerique Clavier;
 
 
 
-// Pin connected to the DS2431 OneWire bus
-#define ONE_WIRE_PIN 27
 
-// OneWire bus
-OneWire oneWire(ONE_WIRE_PIN);
+void ModifierPOI::SetupOneWire()
+{
+    while (!Serial); // wait for Serial to come up on USB boards
+
+    // Search the 1-Wire bus for a connected device.
+    byte serialNb[8];
+    oneWire.target_search(DS2431::ONE_WIRE_FAMILY_CODE);
+    if (!oneWire.search(serialNb))
+    {
+        Serial.println("No DS2431 found on the 1-Wire bus.");
+        return;
+    }
+
+    // Check serial number CRC
+    if (oneWire.crc8(serialNb, 7) != serialNb[7])
+    {
+        Serial.println("A DS2431 was found but the serial number CRC is invalid.");
+        return;
+    }
+
+    Serial.print("DS2431 found with serial number : ");
+    printBuffer(serialNb, 8);
+    Serial.println("");
+
+    // Initialize DS2431 object
+    eeprom.begin(serialNb);
+
+    // Read all memory content
+    byte data[128];
+    eeprom.read(0, data, sizeof(data));
+
+    Serial.println("Memory contents : ");
+    printLargeBuffer(data, sizeof(data));
+    Serial.println("");
+
+
+}
+
+void ModifierPOI::OneWireWrite(){
+
+    byte newData[8]; // Déclaration du tableau de 8 octets
+
+    for (int i = 7; i >= 0; i--) {
+        newData[i] = ValeurPOI % 10; // Extraire le dernier chiffre de l'entier
+        ValeurPOI /= 10; // Supprimer le dernier chiffre de l'entier
+    }
+
+
+
+    word address = 0;
+    if (eeprom.write(address, newData, sizeof(newData)))
+    {
+        Serial.print("Successfully wrote new data @ address ");
+        Serial.println(address);
+    }
+    else
+    {
+        Serial.print("Failed to write data @ address ");
+        Serial.println(address);
+    }
+    Serial.println("");
+
+    // Read again memory content
+    eeprom.read(0, data, sizeof(data));
+
+    Serial.println("Memory contents : ");
+    printLargeBuffer(data, sizeof(data));
+    Serial.println("");
+
+    // Read single byte
+    Serial.print("Data @ address ");
+    Serial.print(address);
+    Serial.print(" : ");
+    Serial.println(eeprom.read(address));
+}
+
+
+
+void ModifierPOI::printBuffer(const uint8_t* buf, uint16_t len)
+{
+    for (int i = 0; i < len - 1; i++)
+    {
+        Serial.print(buf[i], HEX);
+        Serial.print(",");
+    }
+    Serial.println(buf[len - 1], HEX);
+    ValeurPOI = buf[len - 1], HEX;
+}
+
+void ModifierPOI::printLargeBuffer(const uint8_t* buf, uint16_t len)
+{
+    uint8_t bytesPerLine = 8;
+
+    for (int i = 0; i < len / bytesPerLine; i++)
+    {
+        Serial.print(i * bytesPerLine);
+        Serial.print("\t\t:");
+        printBuffer(buf + i * bytesPerLine, bytesPerLine);
+    }
+}
+
+
+
 
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
@@ -45,35 +150,6 @@ String ModifierPOI::GetStringValeurPOI() {
 
 void ModifierPOI::Clear() {
     M5.Lcd.fillScreen(TFT_BLACK);
-}
-
-void ModifierPOI::writeEEPROM(byte* data, int dataSize) {
-    oneWire.reset();
-    oneWire.write(0x55); // Match ROM
-    oneWire.skip(); // Skip ROM
-    oneWire.write(0x0F); // Write Scratchpad command
-
-    for (int i = 0; i < dataSize; i++) {
-        oneWire.write(data[i]);
-    }
-
-    oneWire.reset();
-    oneWire.write(0x55); // Match ROM
-    oneWire.skip(); // Skip ROM
-    oneWire.write(0xAA); // Copy Scratchpad command
-    oneWire.write(0x5A); // Copy Scratchpad parameter
-}
-
-void ModifierPOI::readEEPROM(byte* data, int dataSize) {
-    oneWire.reset();
-    oneWire.write(0x55); // Match ROM
-    oneWire.skip(); // Skip ROM
-    oneWire.write(0xAA); // Read EEPROM command
-    oneWire.skip(); // Skip ROM
-
-    for (int i = 0; i < dataSize; i++) {
-        data[i] = oneWire.read();
-    }
 }
 
 void ModifierPOI::DrawButton() {
@@ -109,8 +185,7 @@ void ModifierPOI::DrawButton() {
 int ModifierPOI::Loop() {
     DrawButton();
 
-    byte data[] = {0x01, 0x02, 0x03, 0x04};
-    writeEEPROM(data, sizeof(data));
+
     bool okButtonPressed = false;
 
     while (true) {
@@ -125,9 +200,11 @@ int ModifierPOI::Loop() {
             if (x > 20 && x < 300) {
                 if (y > 75 && y < 125) {
                     // Bouton Connection pressé
+                    SetupOneWire();
                     if (StatusState == false){StatusState = true;}
                     else {StatusState = false;}
                     DrawButton();
+
 
                 } else if (y > 130 && y < 180) {
                     if (StatusState == false)
@@ -157,6 +234,8 @@ int ModifierPOI::Loop() {
                     }
                     else {
                     // Bouton Modifier POI pressé
+
+
                     Clear();
                     Serial.println("test saisi 1");
                     StringValeurPOI = Clavier.recupererSaisie();
@@ -164,6 +243,23 @@ int ModifierPOI::Loop() {
                     ValeurPOI = StringValeurPOI.toInt();
                     Serial.print("valeur converetir après la saisi : ");
                     Serial.println(ValeurPOI);
+
+
+
+                    OneWireWrite();
+                    Serial.println("Valeur en therorie si ca marche : ");
+                    Serial.println("Valeur en therorie si ca marche : ");
+
+                    Serial.print("newData: ");
+for (int i = 0; i < 4; ++i) {
+    Serial.print(newData[i], HEX); // Print each byte in hexadecimal format
+    Serial.print(" ");
+}
+Serial.println();
+                    Serial.println("Valeur en therorie si ca marche : ");
+                    printLargeBuffer(data, sizeof(data));
+
+
 
                     Clear();
                     DrawButton();}

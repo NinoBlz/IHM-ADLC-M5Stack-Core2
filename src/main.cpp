@@ -5,6 +5,7 @@
 #include "menu.h"
 #include "ModifierPOI.h"
 
+#define ONE_WIRE_BUS 27
 
 
 
@@ -21,6 +22,7 @@ void setup() {
  // menuPrincipalSetup();
   Serial.begin(115200);
   menuPrincipalSetup();
+
 
 }
 

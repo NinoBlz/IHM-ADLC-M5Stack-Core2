@@ -4,8 +4,9 @@
 
 #include <Arduino.h>
 #include <M5Core2.h>
-#include <OneWire.h>
 #include "ClavierNumerique.h"
+
+
 
 class ModifierPOI {
 public:
@@ -13,8 +14,14 @@ public:
     int Loop();
     int GetValeurPOI(); // Méthode pour récupérer ValeurPOI
     String GetStringValeurPOI(); // Méthode pour récupérer StringValeurPOI
-    void writeEEPROM(byte* data, int dataSize); // Méthode pour écrire dans l'EEPROM
-    void readEEPROM(byte* data, int dataSize); // Méthode pour lire depuis l'EEPROM
+
+    byte data[128];
+    byte newData[4];
+    void OneWireWrite();
+
+    void printBuffer(const uint8_t* buf, uint16_t len);
+    void printLargeBuffer(const uint8_t* buf, uint16_t len);
+ 
 
 private:
     String StringValeurPOI = "--------";
@@ -22,6 +29,8 @@ private:
     int ValeurPOI;
     void DrawButton();
     void Clear();
+    void SetupOneWire();
+
 };
 
 #endif

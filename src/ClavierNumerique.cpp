@@ -84,7 +84,7 @@ String ClavierNumerique::recupererSaisie() {
                 delay(1000);
                 afficherClavier();
             }
-            else{break;}
+            else{M5.Lcd.fillScreen(BLACK);delay(300);break;}
         }
 
 
