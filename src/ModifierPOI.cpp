@@ -111,6 +111,7 @@ int ModifierPOI::Loop() {
 
     byte data[] = {0x01, 0x02, 0x03, 0x04};
     writeEEPROM(data, sizeof(data));
+    bool okButtonPressed = false;
 
     while (true) {
 
@@ -124,9 +125,37 @@ int ModifierPOI::Loop() {
             if (x > 20 && x < 300) {
                 if (y > 75 && y < 125) {
                     // Bouton Connection pressé
-                    Clear();
-                    return 1;
+                    if (StatusState == false){StatusState = true;}
+                    else {StatusState = false;}
+                    DrawButton();
+
                 } else if (y > 130 && y < 180) {
+                    if (StatusState == false)
+                    {
+                    M5.Lcd.fillScreen(BLACK);
+                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); // Bouton Modifier POI
+                    M5.Lcd.drawString("EEPROM Non connecter   "    , 35, 95 + 20);
+
+                    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+                    M5.Lcd.drawString("OK"    , 135, 190 + 20);
+                    
+                    while (!okButtonPressed) {
+                        Point p = M5.Touch.getPressPoint();
+
+                        int x = p.x;
+                        int y = p.y;
+
+                        // Vérification des coordonnées pour déterminer quel bouton est pressé
+                        if (x > 120 && x < 200 && y > 190 && y < 240) { // Bouton OK pressé
+                            okButtonPressed = true;
+                            Clear();
+                            delay(500);
+                            DrawButton();}
+                        }
+                    }
+
+                    }
+                    else {
                     // Bouton Modifier POI pressé
                     Clear();
                     Serial.println("test saisi 1");
@@ -137,14 +166,14 @@ int ModifierPOI::Loop() {
                     Serial.println(ValeurPOI);
 
                     Clear();
-                    DrawButton();
+                    DrawButton();}
                 } else if (y > 185 && y < 235) {
                     // Bouton Déconnexion pressé
                     Clear();
                     return 3;
-                }
             }
         }
-        delay(100);
     }
+        delay(100);
 }
+
