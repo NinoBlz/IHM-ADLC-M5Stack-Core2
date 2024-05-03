@@ -9,9 +9,6 @@ void Clavier::setup() {
   drawKeyboard(keysUpper); // Commence avec le clavier des lettres en majuscules
 }
 
-
-
-
 String Clavier::loop(const String& initialText) {
   M5.update();
   bool keyboardVisible = true; // Variable pour indiquer si le clavier est visible ou non
@@ -51,8 +48,6 @@ String Clavier::loop(const String& initialText) {
   // Retourne uniquement le texte saisi sans inclure le texte initial
   return inputText.substring(initialText.length());
 }
-
-
 
 void Clavier::drawKeyboard(const char keys[4][7]) {
   M5.Lcd.fillScreen(BLACK); // Efface l'écran avant de dessiner le clavier

@@ -56,8 +56,6 @@ void ClavierNumerique::dessinerTouche(int x, int y, const char* label) {
 
 }
 
-
-
 String ClavierNumerique::recupererSaisie() {
     saisie = "";
     M5.Lcd.fillScreen(BLACK);
@@ -117,3 +115,4 @@ char ClavierNumerique::verifierTouchePressee(int x, int y) {
     }
     return ' '; // Aucune touche pressée
 }
+

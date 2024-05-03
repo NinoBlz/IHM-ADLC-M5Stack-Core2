@@ -30,13 +30,13 @@ void menuPrincipalSetup() {
 }
 
 int menuPrincipalLoop() {
-  // Affichage des boutons avec couleurs inversées
-  M5.Lcd.fillRoundRect(20, 50, 280, 60, 8, TFT_GREEN); // Bouton 1
+  // Affichage des boutons
+  M5.Lcd.fillRoundRect(20, 50, 280, 60, 8, TFT_GREEN); // Bouton Identification
   M5.Lcd.setTextColor(TFT_WHITE);
   M5.Lcd.setTextSize(2);
   M5.Lcd.drawString("Identification", 60, 70);
   
-  M5.Lcd.fillRoundRect(20, 150, 280, 60, 8, TFT_RED); // Bouton 2
+  M5.Lcd.fillRoundRect(20, 150, 280, 60, 8, TFT_RED); // Bouton Eteindre
   M5.Lcd.drawString("Eteindre", 60, 170);
   
   while (true) {
@@ -63,3 +63,6 @@ int menuPrincipalLoop() {
     delay(100);
   }
 }   
+
+
+

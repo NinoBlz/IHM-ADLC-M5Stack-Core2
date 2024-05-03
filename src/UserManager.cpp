@@ -6,11 +6,10 @@ UserManager::UserManager() {
 }
 
 void UserManager::loadUsers() {
-    // Ici, ajoutez vos utilisateurs prédéfinis
-    users.push_back({"admin", "admin123"}); // Exemple d'utilisateur
+    users.push_back({"admin", "admin123"}); 
     users.push_back({"root", "root"});
     users.push_back({"", ""});
-    // Ajoutez d'autres utilisateurs comme nécessaire
+
 }
 
 bool UserManager::verifyUser(const std::string& username, const std::string& password) {

@@ -1,7 +1,6 @@
 #include "ModifierPOI.h"
 #include "ClavierNumerique.h"
 #include <Arduino.h>
-
 #include <DS2431.h>
 #include <OneWire.h>
 
@@ -11,9 +10,6 @@ OneWire oneWire(ONE_WIRE_PIN);
 DS2431 eeprom(oneWire);
 
 ClavierNumerique Clavier;
-
-
-
 
 void ModifierPOI::SetupOneWire()
 {
@@ -91,8 +87,6 @@ void ModifierPOI::OneWireWrite(){
     Serial.println(eeprom.read(address));
 }
 
-
-
 void ModifierPOI::printBuffer(const uint8_t* buf, uint16_t len)
 {
     for (int i = 0; i < len - 1; i++)
@@ -116,9 +110,6 @@ void ModifierPOI::printLargeBuffer(const uint8_t* buf, uint16_t len)
     }
 }
 
-
-
-
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
     delay(500);
@@ -138,12 +129,10 @@ int ModifierPOI::Setup(int ValeurPOIinitial) {
     return 0;
 }
 
-// Méthode pour récupérer ValeurPOI
 int ModifierPOI::GetValeurPOI() {
     return ValeurPOI;
 }
 
-// Méthode pour récupérer StringValeurPOI
 String ModifierPOI::GetStringValeurPOI() {
     return StringValeurPOI;
 }

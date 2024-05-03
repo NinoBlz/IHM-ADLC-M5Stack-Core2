@@ -12,6 +12,9 @@ class Clavier {
     String loop(const String& initialText); 
 
   private:
+
+// modifier la taille du clavier avec un #define [definition1][definition2]
+
     const int rows = 4; // Nombre de rangées pour le clavier
     const int cols = 7; // Nombre de colonnes par rangée
     const int keyWidth = 40; // Largeur de chaque touche
