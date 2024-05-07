@@ -32,3 +32,4 @@ void System::displayTimeAndBattery() {
     M5.Lcd.setCursor(260 - strlen(displayStr) * 6, 0); // Ajustement de la position pour aligner à droite
     M5.Lcd.print(displayStr);
 }
+

@@ -7,7 +7,10 @@ class ClavierNumerique {
 public:
     ClavierNumerique();
     void afficherClavier();
-    String recupererSaisie();
+    String recupererSaisie(String TextInitialeClavier);
+
+    String TextInitialeClavier2;
+    int recupererSaisieInt(String TextInitialeClavier);
     void setup();
 
     int nbColonnes = 3;
@@ -25,7 +28,7 @@ private:
     void dessinerTouche(int x, int y, const char* label);
     char verifierTouchePressee(int x, int y); 
     String saisie;
-
+    int saisieInt;
 
 
 };

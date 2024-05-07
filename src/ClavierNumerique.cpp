@@ -24,7 +24,7 @@ void ClavierNumerique::afficherClavier() {
     M5.Lcd.setTextSize(2);
     M5.Lcd.setCursor(0, 0);
     M5.Lcd.setTextColor(WHITE);
-    M5.Lcd.print("POI : " + saisie); // Afficher la saisie actuelle
+    M5.Lcd.print(TextInitialeClavier2 + saisie); // Afficher la saisie actuelle
 }
 
 void ClavierNumerique::dessinerTouche(int x, int y, const char* label) {
@@ -56,7 +56,7 @@ void ClavierNumerique::dessinerTouche(int x, int y, const char* label) {
 
 }
 
-String ClavierNumerique::recupererSaisie() {
+String ClavierNumerique::recupererSaisie(String TextInitialeClavier) {
     saisie = "";
     M5.Lcd.fillScreen(BLACK);
     delay(600);
@@ -73,14 +73,38 @@ String ClavierNumerique::recupererSaisie() {
         }
 
         if (M5.BtnC.wasPressed()){
-            if (saisie.length() < 8)
+            if (saisie.length() < 8 && TextInitialeClavier2 == "POI : ")
             {
                 M5.Lcd.fillScreen(BLACK);
                 M5.Lcd.fillRoundRect(20, 95, 280, 100, 8, TFT_RED); // Bouton Modifier POI
                 M5.Lcd.drawString("    Le POI doit "    , 50, 95 + 20);
                 M5.Lcd.drawString("comporter 8 chiffres", 48, 95 + 40);
-                delay(1000);
+                delay(1500);
                 afficherClavier();
+            }
+            else if (saisie.length() < 2 && TextInitialeClavier2 == "Heure : "){
+                M5.Lcd.fillScreen(BLACK);
+                M5.Lcd.fillRoundRect(20, 95, 280, 100, 8, TFT_RED); // Bouton Modifier POI
+                M5.Lcd.drawString("    Saisie    "    , 50, 95 + 20);
+                M5.Lcd.drawString("   incorecte    ", 48, 95 + 40);
+                delay(1500);
+                afficherClavier();  
+            }
+            else if (saisie.length() < 2 && TextInitialeClavier2 == "Minute : "){
+                M5.Lcd.fillScreen(BLACK);
+                M5.Lcd.fillRoundRect(20, 95, 280, 100, 8, TFT_RED); // Bouton Modifier POI
+                M5.Lcd.drawString("    Saisie    "    , 50, 95 + 20);
+                M5.Lcd.drawString("   incorecte    ", 48, 95 + 40);
+                delay(1500);
+                afficherClavier();  
+            }
+            else if (saisie.length() < 2 && TextInitialeClavier2 == "Seconde : "){
+                M5.Lcd.fillScreen(BLACK);
+                M5.Lcd.fillRoundRect(20, 95, 280, 100, 8, TFT_RED); // Bouton Modifier POI
+                M5.Lcd.drawString("    Saisie    "    , 50, 95 + 20);
+                M5.Lcd.drawString("   incorecte    ", 48, 95 + 40);
+                delay(1500);
+                afficherClavier();  
             }
             else{M5.Lcd.fillScreen(BLACK);delay(300);break;}
         }
@@ -100,6 +124,13 @@ String ClavierNumerique::recupererSaisie() {
     return saisie;
 }
 
+int ClavierNumerique::recupererSaisieInt(String TextInitialeClavier) {
+    TextInitialeClavier2 = TextInitialeClavier;
+    String saisieStr = recupererSaisie(TextInitialeClavier); // Appel de la fonction recupererSaisie
+    saisieInt = saisieStr.toInt(); // Convertit la chaîne en entier
+    return saisieInt;
+}
+
 char ClavierNumerique::verifierTouchePressee(int x, int y) {
     // Adjust the conditions below based on the actual layout and sizes of your buttons
     if (y >= startY && y < startY + 3 * (toucheHeight + espace)) { // Rows for keys 1-9
@@ -115,4 +146,5 @@ char ClavierNumerique::verifierTouchePressee(int x, int y) {
     }
     return ' '; // Aucune touche pressée
 }
+
 

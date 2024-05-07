@@ -1,68 +1,68 @@
 #include <M5Core2.h>
 #include "menuPrincipal.h"
+#include "reglage.h"
+#include "ModifierPOI.h"
+
 
 // Variables pour stocker les coordonnées du point de pression
 int16_t x, y;
-
-// Fonctions vides pour les boutons
-int fonction1() {
-  // Ajoutez votre code pour la fonction 1 ici
-  
-  // Animation pour le bouton 1
-  M5.Lcd.fillRoundRect(20, 50, 280, 60, 8, TFT_YELLOW); // Change temporairement la couleur du bouton
-  delay(200); // Attente pour l'animation
-  M5.Lcd.fillRoundRect(20, 50, 280, 60, 8, TFT_RED); // Revenir à la couleur d'origine
-  return 1;
-}
-
-int fonction2() {
-  // Ajoutez votre code pour la fonction 2 ici
-  
-  // Animation pour le bouton 2
-  M5.Lcd.fillRoundRect(20, 150, 280, 60, 8, TFT_YELLOW); // Change temporairement la couleur du bouton
-  delay(200); // Attente pour l'animation
-  M5.Lcd.fillRoundRect(20, 150, 280, 60, 8, TFT_GREEN); // Revenir à la couleur d'origine
-  return 2;
-}
 
 void menuPrincipalSetup() {
   M5.Lcd.fillScreen(TFT_BLACK);
 }
 
-int menuPrincipalLoop() {
+reglage reglagemenu;
+ModifierPOI ModifierPOImenu;
+
+
+void menuPrincipalLoop() {
+  // Taille et espacement uniformes pour tous les boutons
+  int buttonWidth = 280;
+  int buttonHeight = 60;
+  int buttonYStart = 15; // Position de départ du premier bouton
+  int buttonSpacing = 20; // Espacement entre les boutons
+
   // Affichage des boutons
-  M5.Lcd.fillRoundRect(20, 50, 280, 60, 8, TFT_GREEN); // Bouton Identification
+  M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_GREEN); // Bouton Identification
   M5.Lcd.setTextColor(TFT_WHITE);
   M5.Lcd.setTextSize(2);
-  M5.Lcd.drawString("Identification", 60, 70);
-  
-  M5.Lcd.fillRoundRect(20, 150, 280, 60, 8, TFT_RED); // Bouton Eteindre
-  M5.Lcd.drawString("Eteindre", 60, 170);
-  
+  M5.Lcd.drawString("Identification", 60, buttonYStart + 10);
+
+  // Calcul de la position Y du bouton "Réglage" pour qu'il soit au milieu
+  int reglageYStart = buttonYStart + buttonHeight + buttonSpacing;
+  M5.Lcd.fillRoundRect(20, reglageYStart, buttonWidth, buttonHeight, 8, TFT_BLUE); // Bouton Réglage
+  M5.Lcd.drawString("Reglage", 60, reglageYStart + 10);
+
+  // Calcul de la position Y du bouton "Eteindre" pour qu'il soit après "Réglage"
+  int eteindreYStart = reglageYStart + buttonHeight + buttonSpacing;
+  M5.Lcd.fillRoundRect(20, eteindreYStart, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton Eteindre
+  M5.Lcd.drawString("Eteindre", 60, eteindreYStart + 10);
+
   while (true) {
     if (M5.Touch.ispressed()) {
       // Récupération des coordonnées tactiles
       Point p = M5.Touch.getPressPoint();
       int x = p.x;
       int y = p.y;
-      
+
       // Vérification des coordonnées pour déterminer quel bouton est pressé
-      if (x > 20 && x < 220) {
-        if (y > 50 && y < 110) 
-        {
-          // Bouton 1 pressé
-          return 1;
-        } 
-        else if (y > 150 && y < 210) 
-        {
-          // Bouton 2 pressé
-          return 2;
+      if (x > 20 && x < 300) { // Ajustement de la condition x pour correspondre à la largeur des boutons
+        if (y > buttonYStart && y < buttonYStart + buttonHeight) {
+          // Bouton Identification pressé
+          ModifierPOImenu.Setup(00000000);
+          break;
+        } else if (y > reglageYStart && y < reglageYStart + buttonHeight) {
+          // Bouton Réglage pressé
+          reglagemenu.setup();
+          reglagemenu.loop();
+          Serial.println("Réglage effectué");
+          break;
+        } else if (y > eteindreYStart && y < eteindreYStart + buttonHeight) {
+          M5.Axp.DeepSleep();
+          break;;
         }
       }
     }
     delay(100);
   }
-}   
-
-
-
+}

@@ -9,8 +9,11 @@ public:
     void begin();
     void update();
 
+    void reglage();
+
 private:
     void displayTimeAndBattery();
+    
 };
 
 #endif // SYSTEM_H

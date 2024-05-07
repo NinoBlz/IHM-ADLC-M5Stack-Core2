@@ -15,6 +15,7 @@ public:
     int GetValeurPOI(); // Méthode pour récupérer ValeurPOI
     String GetStringValeurPOI(); // Méthode pour récupérer StringValeurPOI
 
+    String TextInitiale = "POI : ";
     byte data[128];
     byte newData[4];
     void OneWireWrite();

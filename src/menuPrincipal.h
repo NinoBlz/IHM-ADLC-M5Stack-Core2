@@ -2,7 +2,7 @@
 #define MENU_PRINCIPAL_H
 
 void menuPrincipalSetup();
-int menuPrincipalLoop();
+void menuPrincipalLoop();
 
 
 #endif

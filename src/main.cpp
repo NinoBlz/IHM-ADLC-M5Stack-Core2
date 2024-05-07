@@ -5,6 +5,7 @@
 #include "menu.h"
 #include "ModifierPOI.h"
 #include "System.h"
+#include "reglage.h"
 
 #define ONE_WIRE_BUS 27
 
@@ -17,6 +18,8 @@ String identifiant;
 String MDP;
 ModifierPOI POI;
 System systemM5;
+unsigned long previousMillis = 0;
+const unsigned long interval = 1000; // Interval d'une seconde
 
 
 void setup() {
@@ -25,20 +28,15 @@ void setup() {
   Serial.begin(115200);
   menuPrincipalSetup();
   systemM5.begin();
+  systemM5.update();
 
 
 }
 
 
 
-
 void loop() {
   systemM5.update();
   menuPrincipalLoop();
-  int selection = menuPrincipalLoop();
-
-  if (selection == 1) {
-    POI.Setup(12345678);
   delay(1000);
-  }
 }

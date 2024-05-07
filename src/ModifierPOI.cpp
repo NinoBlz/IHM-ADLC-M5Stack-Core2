@@ -227,7 +227,7 @@ int ModifierPOI::Loop() {
 
                     Clear();
                     Serial.println("test saisi 1");
-                    StringValeurPOI = Clavier.recupererSaisie();
+                    StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
                     Serial.println("la valeur du POI a été saisi via le clavier : " + StringValeurPOI);
                     ValeurPOI = StringValeurPOI.toInt();
                     Serial.print("valeur converetir après la saisi : ");
@@ -240,11 +240,11 @@ int ModifierPOI::Loop() {
                     Serial.println("Valeur en therorie si ca marche : ");
 
                     Serial.print("newData: ");
-for (int i = 0; i < 4; ++i) {
-    Serial.print(newData[i], HEX); // Print each byte in hexadecimal format
-    Serial.print(" ");
-}
-Serial.println();
+                        for (int i = 0; i < 4; ++i) {
+                            Serial.print(newData[i], HEX); // Print each byte in hexadecimal format
+                            Serial.print(" ");
+                        }
+                    Serial.println();
                     Serial.println("Valeur en therorie si ca marche : ");
                     printLargeBuffer(data, sizeof(data));
 
@@ -252,12 +252,13 @@ Serial.println();
 
                     Clear();
                     DrawButton();}
-                } else if (y > 185 && y < 235) {
+                } 
+                else if (y > 185 && y < 235) {
                     // Bouton Déconnexion pressé
                     Clear();
                     return 3;
-            }
-        }
+                    }
+         }
     }
         delay(100);
 }
