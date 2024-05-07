@@ -3,8 +3,8 @@
 class SDcard { 
 
     public :
-    
-void initialize();
+
+void setup();
 
 void read();
 
