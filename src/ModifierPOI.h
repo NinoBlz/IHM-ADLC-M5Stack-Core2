@@ -22,12 +22,14 @@ public:
 
     void printBuffer(const uint8_t* buf, uint16_t len);
     void printLargeBuffer(const uint8_t* buf, uint16_t len);
- 
+    
+    int ValeurPOI;
+
 
 private:
     String StringValeurPOI = "--------";
     bool StatusState = false;
-    int ValeurPOI;
+
     void DrawButton();
     void Clear();
     void SetupOneWire();

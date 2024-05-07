@@ -113,6 +113,7 @@ void ModifierPOI::printLargeBuffer(const uint8_t* buf, uint16_t len)
 int ModifierPOI::Setup(int ValeurPOIinitial) {
     Clear();
     delay(500);
+    TextInitiale = "POI : ";
     StatusState = false;
     ValeurPOI = ValeurPOIinitial; 
     if (ValeurPOI != 0) {
@@ -158,7 +159,7 @@ void ModifierPOI::DrawButton() {
     M5.Lcd.setTextColor(TFT_BLACK);
     M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
 
-    M5.Lcd.drawString("POI : " + StringValeurPOI, 55, 49);  
+    M5.Lcd.drawString("POI : " + String(ValeurPOI), 55, 49);  
 
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
@@ -199,7 +200,7 @@ int ModifierPOI::Loop() {
                     if (StatusState == false)
                     {
                     M5.Lcd.fillScreen(BLACK);
-                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); // Bouton Modifier POI
+                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); 
                     M5.Lcd.drawString("EEPROM Non connecter   "    , 35, 95 + 20);
 
                     M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
@@ -219,18 +220,19 @@ int ModifierPOI::Loop() {
                             DrawButton();}
                         }
                     }
-
-                    }
-                    else {
+                }
+                if (StatusState == true && (y > 130 && y < 180)){
                     // Bouton Modifier POI pressé
 
 
                     Clear();
                     Serial.println("test saisi 1");
-                    StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
-                    Serial.println("la valeur du POI a été saisi via le clavier : " + StringValeurPOI);
-                    ValeurPOI = StringValeurPOI.toInt();
-                    Serial.print("valeur converetir après la saisi : ");
+                    TextInitiale = "POI : ";
+                    //StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
+                    // Serial.println("la valeur du POI a été saisi via le clavier : " + StringValeurPOI);
+                    //ValeurPOI = StringValeurPOI.toInt();
+                    //Serial.print("valeur converetir après la saisi : ");
+                    ValeurPOI = Clavier.recupererSaisieInt(TextInitiale);
                     Serial.println(ValeurPOI);
 
 
@@ -252,12 +254,13 @@ int ModifierPOI::Loop() {
 
                     Clear();
                     DrawButton();}
-                } 
+                 
                 else if (y > 185 && y < 235) {
                     // Bouton Déconnexion pressé
                     Clear();
                     return 3;
                     }
+                }
          }
     }
         delay(100);

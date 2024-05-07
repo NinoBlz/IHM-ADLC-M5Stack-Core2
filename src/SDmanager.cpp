@@ -1,6 +1,6 @@
 #include <SDmanager.h>
 
-void setup() {
+void SDcard::setup() {
     M5.begin();
     if (!SD.begin()) {
         M5.Lcd.println("SD init failed");
