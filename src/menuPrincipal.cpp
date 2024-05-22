@@ -2,7 +2,7 @@
 #include "menuPrincipal.h"
 #include "reglage.h"
 #include "ModifierPOI.h"
-
+#include "SDmanager.h"
 
 // Variables pour stocker les coordonnées du point de pression
 int16_t x, y;
@@ -13,7 +13,6 @@ void menuPrincipalSetup() {
 
 reglage reglagemenu;
 ModifierPOI ModifierPOImenu;
-
 
 void menuPrincipalLoop() {
   // Taille et espacement uniformes pour tous les boutons
@@ -38,6 +37,8 @@ void menuPrincipalLoop() {
   M5.Lcd.fillRoundRect(20, eteindreYStart, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton Eteindre
   M5.Lcd.drawString("Eteindre", 60, eteindreYStart + 10);
 
+  delay(100); 
+
   while (true) {
     if (M5.Touch.ispressed()) {
       // Récupération des coordonnées tactiles
@@ -55,14 +56,13 @@ void menuPrincipalLoop() {
           // Bouton Réglage pressé
           reglagemenu.setup();
           reglagemenu.loop();
-          Serial.println("Réglage effectué");
           break;
         } else if (y > eteindreYStart && y < eteindreYStart + buttonHeight) {
           M5.Axp.DeepSleep();
-          break;;
+          break;
         }
       }
     }
-    delay(100);
+    //delay(100);
   }
-}
+}  
