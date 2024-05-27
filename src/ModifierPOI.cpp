@@ -14,7 +14,8 @@ ClavierNumerique Clavier;
 
 void ModifierPOI::SetupOneWire()
 {
-    while (!Serial); // wait for Serial to come up on USB boards
+    while (!Serial)
+        ; 
 
     // Search the 1-Wire bus for a connected device.
     byte serialNb[8];
@@ -22,7 +23,7 @@ void ModifierPOI::SetupOneWire()
     if (!oneWire.search(serialNb))
     {
         Serial.println("No DS2431 found on the 1-Wire bus.");
-        EPROOMConnecter = false;
+        EEPROMConnecter = false;
         Serial.println("EEPROMConnecter = false");
         return;
     }
@@ -31,7 +32,7 @@ void ModifierPOI::SetupOneWire()
     if (oneWire.crc8(serialNb, 7) != serialNb[7])
     {
         Serial.println("A DS2431 was found but the serial number CRC is invalid.");
-        EPROOMConnecter = false;
+        EEPROMConnecter = false;
         Serial.println("EEPROMConnecter = false");
         return;
     }
@@ -51,52 +52,59 @@ void ModifierPOI::SetupOneWire()
     printLargeBuffer(data, sizeof(data));
     Serial.println("");
 
-    // lecture des 8 premier bit de l'EEPROM afin de la stocker dans la variable DataPOI
+    // lecture des 8 premier bit de l'EEPROM afin de la stocker dans la variable
+    // DataPOI
     byte newData[8]; // Déclaration du tableau de 8 octets
 
     // Read the first 8 bytes from the memory contents
     eeprom.read(0, newData, 8);
 
-    // Store the first 8 bytes in the DataPOI variable
-    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
-    Serial.print("valeur de DataPOI : ");
-    Serial.println(DataPOI);
+    // char charDataPOI[9]; // Tableau de caractères pour stocker "12345678" + caractère nul
+    for (int i = 0; i < 8; i++)
+    {
+        charDataPOI[i] = data[i] - ASCII + '0'; // Convertir chaque chiffre en caractère
+    }
+    charDataPOI[8] = '\0'; // Ajouter le caractère nul à la fin
 
+    Serial.print("charDataPOI: ");
+    Serial.println(charDataPOI);
+    DataPOI =
 
-    //
-    EPROOMConnecter = true ;
+        //
+        EEPROMConnecter = true;
     Serial.println("EEPROMConnecter = true");
-
-
-
 }
 
-void ModifierPOI::OneWireWrite(){
+void ModifierPOI::OneWireWrite()
+{
 
     byte newData[8]; // Déclaration du tableau de 8 octets
 
-    for (int i = 7; i >= 0; i--) {
-        newData[i] = ValeurPOI % 10 + ASCII; // Extraire le dernier chiffre de l'entier //48 = decimal vers ascii (mettre en constante dans le debut du code)
-        ValeurPOI /= 10; // Supprimer le dernier chiffre de l'entier
+    for (int i = 7; i >= 0; i--)
+    {
+        newData[i] = ValeurPOI % 10 + ASCII; // Extraire le dernier chiffre de l'entier //48 = decimal vers
+                                             // ascii (mettre en constante dans le debut du code)
+        ValeurPOI /= 10;                     // Supprimer le dernier chiffre de l'entier
     }
-
-
-
 
     word address = 0;
     if (eeprom.write(address, newData, sizeof(newData)))
     {
         Serial.print("Successfully wrote new data @ address ");
         Serial.println(address);
-                            byte newData[8]; // Déclaration du tableau de 8 octets
+        byte newData[8]; // Déclaration du tableau de 8 octets
 
-                    // Read the first 8 bytes from the memory contents
-                    eeprom.read(0, newData, 8);
+        // Read the first 8 bytes from the memory contents
+        eeprom.read(0, newData, 8);
 
-                    // Store the first 8 bytes in the DataPOI variable
-                    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
-                    Serial.print("valeur de DataPOI : ");
-                    Serial.println(DataPOI);
+        for (int i = 0; i < 8; i++)
+        {
+            charDataPOI[i] = newData[i] - ASCII + '0'; // Convertir chaque chiffre en caractère
+        }
+        charDataPOI[8] = '\0'; // Ajouter le caractère nul à la fin
+
+        Serial.print("charDataPOI: ");
+        Serial.println(charDataPOI);
     }
     else
     {
@@ -119,7 +127,7 @@ void ModifierPOI::OneWireWrite(){
     Serial.println(eeprom.read(address));
 }
 
-void ModifierPOI::printBuffer(const uint8_t* buf, uint16_t len)
+void ModifierPOI::printBuffer(const uint8_t *buf, uint16_t len)
 {
     for (int i = 0; i < len - 1; i++)
     {
@@ -130,7 +138,7 @@ void ModifierPOI::printBuffer(const uint8_t* buf, uint16_t len)
     ValeurPOI = buf[len - 1], HEX;
 }
 
-void ModifierPOI::printLargeBuffer(const uint8_t* buf, uint16_t len)
+void ModifierPOI::printLargeBuffer(const uint8_t *buf, uint16_t len)
 {
     uint8_t bytesPerLine = 8;
 
@@ -142,15 +150,16 @@ void ModifierPOI::printLargeBuffer(const uint8_t* buf, uint16_t len)
     }
 }
 
-int ModifierPOI::Setup(int ValeurPOIinitial) {
+int ModifierPOI::Setup(int ValeurPOIinitial)
+{
     Clear();
     delay(500);
     TextInitiale = "POI : ";
     StatusState = false;
-    ValeurPOI = ValeurPOIinitial; 
-   // if (ValeurPOI != 0) {
-        StringValeurPOI = String(ValeurPOI); // Met à jour StringValeurPOI
-   // }
+    ValeurPOI = ValeurPOIinitial;
+    // if (ValeurPOI != 0) {
+    StringValeurPOI = String(ValeurPOI); // Met à jour StringValeurPOI
+                                         // }
 
     Serial.print("la valeur du POI en int (ValeurPOIinitial) = ");
     Serial.println(ValeurPOIinitial);
@@ -162,176 +171,212 @@ int ModifierPOI::Setup(int ValeurPOIinitial) {
     return 0;
 }
 
-int ModifierPOI::GetValeurPOI() {
-    return ValeurPOI;
-}
+int ModifierPOI::GetValeurPOI() { return ValeurPOI; }
 
-String ModifierPOI::GetStringValeurPOI() {
-    return StringValeurPOI;
-}
+String ModifierPOI::GetStringValeurPOI() { return StringValeurPOI; }
 
-void ModifierPOI::Clear() {
-    M5.Lcd.fillScreen(TFT_BLACK);
-}
+void ModifierPOI::Clear() { M5.Lcd.fillScreen(TFT_BLACK); }
 
-void ModifierPOI::DrawButton() {
-    ValeurPOI = DataPOI;
+void ModifierPOI::DrawButton()
+{
+    // ValeurPOI = DataPOI;
     M5.Lcd.fillScreen(TFT_BLACK);
 
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    if (StatusState == true){
-        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN);  // Status 
+    if (StatusState == true)
+    {
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN); // Status
         M5.Lcd.drawString("Status : Connecte", 55, 12);
     }
-    else {
-        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED);  // Status  
-        M5.Lcd.drawString("Status : Deconecte" , 55, 12);
+    else
+    {
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED); // Status
+        M5.Lcd.drawString("Status : Deconecte", 55, 12);
     }
 
     M5.Lcd.setTextColor(TFT_BLACK);
     M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
+    M5.Lcd.drawString("POI : " + String(charDataPOI), 55, 49);
+    Serial.println("la valeur qui devrais etre afficher dans le cadre gris est (+ String(DataPOI))  : " +
+                   String(DataPOI));
+    Serial.println("la valeur qui devrais etre afficher dans le cadre gris est (DataPOI)  : " + DataPOI);
+    Serial.println(charDataPOI);
 
-    M5.Lcd.drawString("POI : " + String(ValeurPOI), 55, 49);  
+    if (StatusState == true)
+    {
+        M5.Lcd.setTextColor(TFT_WHITE);
+        M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_RED); // Bouton Connection
+        M5.Lcd.drawString("Deconexion", 55, 95);
+    }
+    else
+    {
+        M5.Lcd.setTextColor(TFT_WHITE);
+        M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
+        M5.Lcd.drawString("Connection", 55, 95);
+    }
 
-    M5.Lcd.setTextColor(TFT_WHITE);
-    M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
-    M5.Lcd.drawString("Connection", 55, 95);
-   
     M5.Lcd.fillRoundRect(20, 130, 280, 50, 8, TFT_PURPLE); // Bouton Modifier POI
     M5.Lcd.drawString("Modifier POI", 55, 150);
 
     M5.Lcd.fillRoundRect(20, 185, 280, 50, 8, TFT_RED); // Bouton Déconnexion
-    M5.Lcd.drawString("Deconnexion", 55, 205);
+    M5.Lcd.drawString("Retour", 55, 205);
 }
 
-void MessageNoEEPROM () {
-        bool okButtonPressed = false;
+void ModifierPOI::MessageNoEEPROM()
+{
+    bool okButtonPressed = false;
 
-                    M5.Lcd.fillScreen(BLACK);
-                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); 
-                    M5.Lcd.drawString("EEPROM Non connecter   "    , 35, 95 + 20);
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.fillRoundRect(20, 50, 280, 120, 16, TFT_RED); // Adjust the tailing of the rectangle
+    M5.Lcd.drawString("Aucune EEPROM a ete", 35, 50 + 20);
+    M5.Lcd.drawString("trouvee sur le", 60, 50 + 45);
+    M5.Lcd.drawString("PORT GPIO 27", 75, 50 + 70);
 
-                    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
-                    M5.Lcd.drawString("OK"    , 135, 190 + 20);
-                    
-                    while (!okButtonPressed) {
-                        Point p = M5.Touch.getPressPoint();
+    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+    M5.Lcd.drawString("OK", 135, 190 + 20);
 
-                        int x = p.x;
-                        int y = p.y;
+    while (!okButtonPressed)
+    {
+        Point p = M5.Touch.getPressPoint();
 
-                        // Vérification des coordonnées pour déterminer quel bouton est pressé
-                        if (x > 120 && x < 200 && y > 190 && y < 240) { // Bouton OK pressé
-                            okButtonPressed = true;
-                            Clear();
-                            delay(500);
-                            DrawButton();}
-                        }
-                    
+        int x = p.x;
+        int y = p.y;
+
+        // Vérification des coordonnées pour déterminer quel bouton est pressé
+        if (x > 120 && x < 200 && y > 190 && y < 240)
+        { // Bouton OK pressé
+            okButtonPressed = true;
+            Clear();
+            delay(500);
+            DrawButton();
+        }
+    }
 }
 
-
-
-int ModifierPOI::Loop() {
+int ModifierPOI::Loop()
+{
     DrawButton();
+    bool okButtonPressed = false;
 
+    while (true)
+    {
 
-
-    while (true) {
-
-        if (M5.Touch.ispressed()) {
+        if (M5.Touch.ispressed())
+        {
             // Récupération des coordonnées tactiles
             Point p = M5.Touch.getPressPoint();
             int x = p.x;
             int y = p.y;
-            
+
             // Vérification des coordonnées pour déterminer quel bouton est pressé
-            if (x > 20 && x < 300) {
-                if (y > 75 && y < 125) {
+            if (x > 20 && x < 300)
+            {
+                if (y > 75 && y < 125)
+                {
                     // Bouton Connection pressé
                     SetupOneWire();
-                    if (StatusState == false && EPROOMConnecter == true){StatusState = true; Serial.println("EEPROMConnecter = true & StatusState = true");}
-                    else {StatusState = false;}
+                    if (EEPROMConnecter == false)
+                    {
+                        MessageNoEEPROM();
+                    }
+                    if (StatusState == false && EEPROMConnecter == true)
+                    {
+                        StatusState = true;
+                        Serial.println("EEPROMConnecter = true & StatusState = true");
+                    }
+                    else
+                    {
+                        StatusState = false;
+                    }
                     DrawButton();
-
-
-                } else if (y > 130 && y < 180) {
+                }
+                else if (y > 130 && y < 180)
+                {
                     if (StatusState == false)
                     {
-                    M5.Lcd.fillScreen(BLACK);
-                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); 
-                    M5.Lcd.drawString("EEPROM Non connecter   "    , 35, 95 + 20);
+                        M5.Lcd.fillScreen(BLACK);
+                        M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED);
+                        M5.Lcd.drawString("EEPROM Non connecter   ", 35, 95 + 20);
 
-                    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
-                    M5.Lcd.drawString("OK"    , 135, 190 + 20);
-                    
-                    while (!okButtonPressed) {
-                        Point p = M5.Touch.getPressPoint();
+                        M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+                        M5.Lcd.drawString("OK", 135, 190 + 20);
 
-                        int x = p.x;
-                        int y = p.y;
+                        while (!okButtonPressed)
+                        {
+                            Point p = M5.Touch.getPressPoint();
 
-                        // Vérification des coordonnées pour déterminer quel bouton est pressé
-                        if (x > 120 && x < 200 && y > 190 && y < 240) { // Bouton OK pressé
-                            okButtonPressed = true;
-                            Clear();
-                            delay(500);
-                            DrawButton();}
+                            int x = p.x;
+                            int y = p.y;
+
+                            // Vérification des coordonnées pour déterminer quel bouton est
+                            // pressé
+                            if (x > 120 && x < 200 && y > 190 && y < 240)
+                            { // Bouton OK pressé
+                                okButtonPressed = true;
+                                Clear();
+                                delay(500);
+                                DrawButton();
+                            }
                         }
                     }
                 }
-                if (StatusState == true && (y > 130 && y < 180)){
+                if (StatusState == true && (y > 130 && y < 180))
+                {
                     // Bouton Modifier POI pressé
-
 
                     Clear();
                     Serial.println("test saisi 1");
+                    Serial.println("la valeur de CharDataPOI AVANT la modification est  :" + String(charDataPOI));
                     TextInitiale = "POI : ";
-                    //StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
-                    // Serial.println("la valeur du POI a été saisi via le clavier : " + StringValeurPOI);
-                    //ValeurPOI = StringValeurPOI.toInt();
-                    //Serial.print("valeur converetir après la saisi : ");
+                    // StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
+                    //  Serial.println("la valeur du POI a été saisi via le clavier : " +
+                    //  StringValeurPOI);
+                    // ValeurPOI = StringValeurPOI.toInt();
+                    // Serial.print("valeur converetir après la saisi : ");
                     ValeurPOI = Clavier.recupererSaisieInt(TextInitiale);
-                    Serial.println(ValeurPOI);
-
-
+                    // Serial.println(ValeurPOI);
 
                     OneWireWrite();
-                    Serial.println("Valeur en therorie si ca marche : ");
-                    Serial.println("Valeur en therorie si ca marche : ");
+                    /*
+                     Serial.println("Valeur en therorie si ca marche : ");
+                     Serial.println("Valeur en therorie si ca marche : ");
 
-                    Serial.print("newData: ");
-                        for (int i = 0; i < 4; ++i) {
-                            Serial.print(newData[i], HEX); // Print each byte in hexadecimal format
-                            Serial.print(" ");
-                        }
-                    Serial.println();
-                    Serial.println("Valeur en therorie si ca marche : ");
-                    printLargeBuffer(data, sizeof(data));
-       /*             
-                    byte newData[8]; // Déclaration du tableau de 8 octets
+                     Serial.print("newData: ");
+                     for (int i = 0; i < 4; ++i)
+                     {
+                         Serial.print(newData[i],
+                                      HEX); // Print each byte in hexadecimal format
+                         Serial.print(" ");
+                     }
+                     Serial.println();
+                     Serial.println("Valeur en therorie si ca marche : ");
+                     printLargeBuffer(data, sizeof(data));
 
-                    // Read the first 8 bytes from the memory contents
-                    eeprom.read(0, newData, 8);
+                                  byte newData[8]; // Déclaration du tableau de 8 octets
 
-                    // Store the first 8 bytes in the DataPOI variable
-                    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
-                    Serial.print("valeur de DataPOI : ");
-                    Serial.println(DataPOI);
-               */
+                                  // Read the first 8 bytes from the memory contents
+                                  eeprom.read(0, newData, 8);
+
+                                  // Store the first 8 bytes in the DataPOI variable
+                                  DataPOI = newData[0] | (newData[1] << 8) | (newData[2] <<
+                        16) | (newData[3] << 24); Serial.print("valeur de DataPOI : ");
+                                  Serial.println(DataPOI);
+                             */
 
                     Clear();
-                    DrawButton();}
-                 
-                else if (y > 185 && y < 235) {
+                    Serial.println("la valeur de CharDataPOI APRES la modification est  :" + String(charDataPOI));
+                    DrawButton();
+                }
+
+                else if (y > 185 && y < 235)
+                {
                     // Bouton Déconnexion pressé
                     Clear();
                     return 3;
-                    }
                 }
-         }
+            }
+        }
     }
-        delay(100);
+    delay(100);
 }
-

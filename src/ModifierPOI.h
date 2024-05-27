@@ -26,9 +26,12 @@ public:
     void MessageNoEEPROM();
 
     int ValeurPOI;
-    int DataPOI;
 
-    bool EPROOMConnecter = false;
+    int DataPOI;
+    int *PtDataPOI = &DataPOI;
+    char charDataPOI[9];
+
+    bool EEPROMConnecter = false;
 
 private:
     String StringValeurPOI = "--------";
