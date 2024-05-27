@@ -14,6 +14,7 @@ void menuPrincipalSetup() {
 reglage reglagemenu;
 ModifierPOI ModifierPOImenu;
 
+
 void menuPrincipalLoop() {
   // Taille et espacement uniformes pour tous les boutons
   int buttonWidth = 280;

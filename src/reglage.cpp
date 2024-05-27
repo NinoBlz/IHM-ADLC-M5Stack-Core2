@@ -11,6 +11,8 @@ void reglage::setup(){
     M5.Lcd.setTextSize(2);
     M5.Lcd.drawString("reglee l'heure", 60, buttonYStart + 10);
 
+    
+
 
     M5.Lcd.fillRoundRect(20, buttonYStart+160, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton reglage de l'heure
     M5.Lcd.setTextColor(TFT_WHITE);

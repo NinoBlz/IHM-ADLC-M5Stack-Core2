@@ -23,8 +23,12 @@ public:
     void printBuffer(const uint8_t* buf, uint16_t len);
     void printLargeBuffer(const uint8_t* buf, uint16_t len);
     
-    int ValeurPOI;
+    void MessageNoEEPROM();
 
+    int ValeurPOI;
+    int DataPOI;
+
+    bool EPROOMConnecter = false;
 
 private:
     String StringValeurPOI = "--------";
@@ -33,6 +37,7 @@ private:
     void DrawButton();
     void Clear();
     void SetupOneWire();
+
 
 };
 

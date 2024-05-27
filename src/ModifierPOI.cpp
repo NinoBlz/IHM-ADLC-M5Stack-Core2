@@ -3,6 +3,7 @@
 #include <Arduino.h>
 #include <DS2431.h>
 #include <OneWire.h>
+const int ASCII = 48;
 
 const int ONE_WIRE_PIN = 27;
 
@@ -21,6 +22,8 @@ void ModifierPOI::SetupOneWire()
     if (!oneWire.search(serialNb))
     {
         Serial.println("No DS2431 found on the 1-Wire bus.");
+        EPROOMConnecter = false;
+        Serial.println("EEPROMConnecter = false");
         return;
     }
 
@@ -28,6 +31,8 @@ void ModifierPOI::SetupOneWire()
     if (oneWire.crc8(serialNb, 7) != serialNb[7])
     {
         Serial.println("A DS2431 was found but the serial number CRC is invalid.");
+        EPROOMConnecter = false;
+        Serial.println("EEPROMConnecter = false");
         return;
     }
 
@@ -46,6 +51,23 @@ void ModifierPOI::SetupOneWire()
     printLargeBuffer(data, sizeof(data));
     Serial.println("");
 
+    // lecture des 8 premier bit de l'EEPROM afin de la stocker dans la variable DataPOI
+    byte newData[8]; // Déclaration du tableau de 8 octets
+
+    // Read the first 8 bytes from the memory contents
+    eeprom.read(0, newData, 8);
+
+    // Store the first 8 bytes in the DataPOI variable
+    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
+    Serial.print("valeur de DataPOI : ");
+    Serial.println(DataPOI);
+
+
+    //
+    EPROOMConnecter = true ;
+    Serial.println("EEPROMConnecter = true");
+
+
 
 }
 
@@ -54,9 +76,10 @@ void ModifierPOI::OneWireWrite(){
     byte newData[8]; // Déclaration du tableau de 8 octets
 
     for (int i = 7; i >= 0; i--) {
-        newData[i] = ValeurPOI % 10; // Extraire le dernier chiffre de l'entier
+        newData[i] = ValeurPOI % 10 + ASCII; // Extraire le dernier chiffre de l'entier //48 = decimal vers ascii (mettre en constante dans le debut du code)
         ValeurPOI /= 10; // Supprimer le dernier chiffre de l'entier
     }
+
 
 
 
@@ -65,6 +88,15 @@ void ModifierPOI::OneWireWrite(){
     {
         Serial.print("Successfully wrote new data @ address ");
         Serial.println(address);
+                            byte newData[8]; // Déclaration du tableau de 8 octets
+
+                    // Read the first 8 bytes from the memory contents
+                    eeprom.read(0, newData, 8);
+
+                    // Store the first 8 bytes in the DataPOI variable
+                    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
+                    Serial.print("valeur de DataPOI : ");
+                    Serial.println(DataPOI);
     }
     else
     {
@@ -116,9 +148,9 @@ int ModifierPOI::Setup(int ValeurPOIinitial) {
     TextInitiale = "POI : ";
     StatusState = false;
     ValeurPOI = ValeurPOIinitial; 
-    if (ValeurPOI != 0) {
+   // if (ValeurPOI != 0) {
         StringValeurPOI = String(ValeurPOI); // Met à jour StringValeurPOI
-    }
+   // }
 
     Serial.print("la valeur du POI en int (ValeurPOIinitial) = ");
     Serial.println(ValeurPOIinitial);
@@ -143,6 +175,7 @@ void ModifierPOI::Clear() {
 }
 
 void ModifierPOI::DrawButton() {
+    ValeurPOI = DataPOI;
     M5.Lcd.fillScreen(TFT_BLACK);
 
     M5.Lcd.setTextColor(TFT_WHITE);
@@ -172,11 +205,38 @@ void ModifierPOI::DrawButton() {
     M5.Lcd.drawString("Deconnexion", 55, 205);
 }
 
+void MessageNoEEPROM () {
+        bool okButtonPressed = false;
+
+                    M5.Lcd.fillScreen(BLACK);
+                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED); 
+                    M5.Lcd.drawString("EEPROM Non connecter   "    , 35, 95 + 20);
+
+                    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+                    M5.Lcd.drawString("OK"    , 135, 190 + 20);
+                    
+                    while (!okButtonPressed) {
+                        Point p = M5.Touch.getPressPoint();
+
+                        int x = p.x;
+                        int y = p.y;
+
+                        // Vérification des coordonnées pour déterminer quel bouton est pressé
+                        if (x > 120 && x < 200 && y > 190 && y < 240) { // Bouton OK pressé
+                            okButtonPressed = true;
+                            Clear();
+                            delay(500);
+                            DrawButton();}
+                        }
+                    
+}
+
+
+
 int ModifierPOI::Loop() {
     DrawButton();
 
 
-    bool okButtonPressed = false;
 
     while (true) {
 
@@ -191,7 +251,7 @@ int ModifierPOI::Loop() {
                 if (y > 75 && y < 125) {
                     // Bouton Connection pressé
                     SetupOneWire();
-                    if (StatusState == false){StatusState = true;}
+                    if (StatusState == false && EPROOMConnecter == true){StatusState = true; Serial.println("EEPROMConnecter = true & StatusState = true");}
                     else {StatusState = false;}
                     DrawButton();
 
@@ -249,8 +309,17 @@ int ModifierPOI::Loop() {
                     Serial.println();
                     Serial.println("Valeur en therorie si ca marche : ");
                     printLargeBuffer(data, sizeof(data));
+       /*             
+                    byte newData[8]; // Déclaration du tableau de 8 octets
 
+                    // Read the first 8 bytes from the memory contents
+                    eeprom.read(0, newData, 8);
 
+                    // Store the first 8 bytes in the DataPOI variable
+                    DataPOI = newData[0] | (newData[1] << 8) | (newData[2] << 16) | (newData[3] << 24);
+                    Serial.print("valeur de DataPOI : ");
+                    Serial.println(DataPOI);
+               */
 
                     Clear();
                     DrawButton();}
