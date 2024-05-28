@@ -13,14 +13,9 @@ void ErrorMessage(String error);
 void Clear();
 void read();
 
-void write();
+void write(String data);
 
-void deleteFile();
-
-void listFiles();
-
-
-
+File myFile;
 
     private : 
 

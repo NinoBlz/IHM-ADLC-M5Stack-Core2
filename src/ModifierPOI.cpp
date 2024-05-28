@@ -1,5 +1,6 @@
 #include "ModifierPOI.h"
 #include "ClavierNumerique.h"
+#include "SDmanager.h"
 #include <Arduino.h>
 #include <DS2431.h>
 #include <OneWire.h>
@@ -11,6 +12,7 @@ OneWire oneWire(ONE_WIRE_PIN);
 DS2431 eeprom(oneWire);
 
 ClavierNumerique Clavier;
+SDcard cardSD;
 
 void ModifierPOI::SetupOneWire()
 {
@@ -71,7 +73,7 @@ void ModifierPOI::SetupOneWire()
     DataPOI =
 
         //
-        EEPROMConnecter = true;
+    EEPROMConnecter = true;
     Serial.println("EEPROMConnecter = true");
 }
 
@@ -105,6 +107,7 @@ void ModifierPOI::OneWireWrite()
 
         Serial.print("charDataPOI: ");
         Serial.println(charDataPOI);
+        cardSD.write(charDataPOI);
     }
     else
     {
@@ -185,6 +188,7 @@ void ModifierPOI::DrawButton()
     M5.Lcd.setTextSize(2);
     if (StatusState == true)
     {
+        cardSD.setup();
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN); // Status
         M5.Lcd.setTextColor(TFT_BLACK);
         M5.Lcd.drawString("Status : Connecte", 55, 12);

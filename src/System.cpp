@@ -10,18 +10,25 @@ void System::begin() {
 }
 
 void System::update() {
-    M5.update();
+    GetTime();
     displayTimeAndBattery();
 }
 
-void System::displayTimeAndBattery() {
-    RTC_TimeTypeDef time;
-    RTC_DateTypeDef date;
-    
+void System::GetTime(){
+    M5.update();
     // Obtention de l'heure et de la date actuelles
     M5.Rtc.GetTime(&time);
     M5.Rtc.GetDate(&date);
-    
+}
+
+String System::GetTimeString(){
+    GetTime();
+    String dateString = String(date.Year) + "/" + String(date.Month) + "/" + String(date.Date);
+    String timeString = String(time.Hours) + ":" + String(time.Minutes) + ":" + String(time.Seconds);
+    return dateString + " " + timeString;
+}
+
+void System::displayTimeAndBattery() {
     // Formatage et affichage de l'heure et du pourcentage de la batterie
     float batteryVoltage = M5.Axp.GetBatVoltage();
     int batteryLevel = map(batteryVoltage, 3.2, 4.2, 0, 100); // Conversion approximative tension en pourcentage

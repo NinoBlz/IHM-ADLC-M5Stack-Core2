@@ -11,6 +11,13 @@ public:
 
     void reglage();
 
+    void GetTime();
+
+    String GetTimeString();
+
+    RTC_TimeTypeDef time;
+    RTC_DateTypeDef date;
+
 private:
     void displayTimeAndBattery();
     

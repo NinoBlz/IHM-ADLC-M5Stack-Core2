@@ -51,14 +51,23 @@ void menuPrincipalLoop() {
       if (x > 20 && x < 300) { // Ajustement de la condition x pour correspondre à la largeur des boutons
         if (y > buttonYStart && y < buttonYStart + buttonHeight) {
           // Bouton Identification pressé
+          M5.Axp.SetVibration(true);  
+          delay(100);
+          M5.Axp.SetVibration(false);  
           ModifierPOImenu.Setup(00000000);
           break;
         } else if (y > reglageYStart && y < reglageYStart + buttonHeight) {
           // Bouton Réglage pressé
+                    M5.Axp.SetVibration(true);  
+          delay(100);
+          M5.Axp.SetVibration(false);  
           reglagemenu.setup();
           reglagemenu.loop();
           break;
         } else if (y > eteindreYStart && y < eteindreYStart + buttonHeight) {
+          M5.Axp.SetVibration(true);  
+          delay(100);
+          M5.Axp.SetVibration(false);  
           M5.Axp.DeepSleep();
           break;
         }
