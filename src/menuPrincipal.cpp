@@ -38,7 +38,7 @@ void menuPrincipalLoop() {
   M5.Lcd.fillRoundRect(20, eteindreYStart, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton Eteindre
   M5.Lcd.drawString("Eteindre", 60, eteindreYStart + 10);
 
-  delay(100); 
+
 
   while (true) {
     if (M5.Touch.ispressed()) {

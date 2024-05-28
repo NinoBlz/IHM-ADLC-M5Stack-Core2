@@ -15,7 +15,7 @@ ClavierNumerique Clavier;
 void ModifierPOI::SetupOneWire()
 {
     while (!Serial)
-        ; 
+        ;
 
     // Search the 1-Wire bus for a connected device.
     byte serialNb[8];
@@ -153,7 +153,6 @@ void ModifierPOI::printLargeBuffer(const uint8_t *buf, uint16_t len)
 int ModifierPOI::Setup(int ValeurPOIinitial)
 {
     Clear();
-    delay(500);
     TextInitiale = "POI : ";
     StatusState = false;
     ValeurPOI = ValeurPOIinitial;
@@ -187,21 +186,20 @@ void ModifierPOI::DrawButton()
     if (StatusState == true)
     {
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN); // Status
+        M5.Lcd.setTextColor(TFT_BLACK);
         M5.Lcd.drawString("Status : Connecte", 55, 12);
     }
     else
     {
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED); // Status
         M5.Lcd.drawString("Status : Deconecte", 55, 12);
+        strcpy(charDataPOI, ""); // Copie une chaîne vide dans charDataPOI
     }
 
     M5.Lcd.setTextColor(TFT_BLACK);
     M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
     M5.Lcd.drawString("POI : " + String(charDataPOI), 55, 49);
-    Serial.println("la valeur qui devrais etre afficher dans le cadre gris est (+ String(DataPOI))  : " +
-                   String(DataPOI));
-    Serial.println("la valeur qui devrais etre afficher dans le cadre gris est (DataPOI)  : " + DataPOI);
-    Serial.println(charDataPOI);
+    Serial.println("CharDataPOI" + String(charDataPOI));
 
     if (StatusState == true)
     {
@@ -297,7 +295,7 @@ int ModifierPOI::Loop()
                     {
                         M5.Lcd.fillScreen(BLACK);
                         M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED);
-                        M5.Lcd.drawString("EEPROM Non connecter   ", 35, 95 + 20);
+                        M5.Lcd.drawString("EEPROM Non connecter   ", 35, 93 + 20);
 
                         M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
                         M5.Lcd.drawString("OK", 135, 190 + 20);
@@ -378,5 +376,4 @@ int ModifierPOI::Loop()
             }
         }
     }
-    delay(100);
 }

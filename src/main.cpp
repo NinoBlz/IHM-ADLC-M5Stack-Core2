@@ -37,5 +37,4 @@ void setup() {
 void loop() {
   systemM5.update();
   menuPrincipalLoop();
-  delay(1000);
 }

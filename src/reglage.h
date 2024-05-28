@@ -1,3 +1,5 @@
+#ifndef REGLAGE_H
+#define REGLAGE_H
 #include <M5Core2.h>
 #include "ClavierNumerique.h"
 
@@ -8,7 +10,16 @@ class reglage {
     void setup();
     void loop();
 
-    bool heureregler = false;
+    void Menu1();
+    void Menu2();
+
+    void Clear();
+
+    void enregistrerUtilisateur();
+
+    int EtatMenu = 1;
+
+    bool MenuRetour = false;
     private:
 
     int heure = 0;
@@ -21,3 +32,5 @@ class reglage {
     int buttonSpacing = 20; // Espacement entre les boutons
 
 };
+
+#endif // REGLAGE_H
