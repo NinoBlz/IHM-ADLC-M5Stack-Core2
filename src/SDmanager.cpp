@@ -41,7 +41,7 @@ void SDcard::write(String data)
     { // If the file is open, then write to it.
         Serial.println("Writing to donnee.txt...");
 
-        myFile.println("Date : " + sys.GetTimeString() + " POI :" + data);
+        myFile.println(sys.GetTimeString() + " POI :" + data);
         myFile.close(); // Close the file.
 
         Serial.println("done.");
@@ -81,25 +81,31 @@ void SDcard::ErrorMessage(String error)
     }
 }
 
-void SDcard::read(){
+void SDcard::read()
+{
     setup();
     Clear();
-    M5.lcd.setTextSize(0.5);
-    myFile = SD.open("/donnee.txt", FILE_READ); // Open the file "/hello.txt" in read mode.
+
+    myFile = SD.open("/donnee.txt", FILE_READ); // Open the file "/donnee.txt" in read mode.
     if (myFile)
-    {
+    { 
+        M5.lcd.setTextSize(1);
+        M5.lcd.setCursor(0, 0);
+        M5.lcd.println("POI enregistrer sur la carte SD :");
+        M5.lcd.println("");
+       
         while (myFile.available())
         {
             M5.Lcd.write(myFile.read());
         }
         myFile.close();
+        M5.lcd.setTextSize(2);
     }
     else
     {
         ErrorMessage("error opening /donnee.txt"); // If the file is not open.
     }
-    M5.lcd.setTextSize(2);
-    delay (2000);
+    delay(2000);
 }
 
 void SDcard::Clear() { M5.Lcd.fillScreen(BLACK); }

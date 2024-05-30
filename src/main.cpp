@@ -2,7 +2,7 @@
 #include "menuPrincipal.h"
 #include "UserManager.h"
 #include <string>
-#include "menu.h"
+//#include "menu.h"
 #include "ModifierPOI.h"
 #include "System.h"
 #include "reglage.h"
@@ -12,7 +12,7 @@
 
 
 
-
+menuPrincipal menu;
 UserManager userManager; // Déclaration de userManager pour l'utiliser dans toute la fonction
 String identifiant;
 String MDP;
@@ -26,7 +26,7 @@ void setup() {
   M5.begin();
  // menuPrincipalSetup();
   Serial.begin(115200);
-  menuPrincipalSetup();
+  menu.clear();
   systemM5.begin();
   systemM5.update();
 
@@ -36,5 +36,5 @@ void setup() {
 
 void loop() {
   systemM5.update();
-  menuPrincipalLoop();
+  menu.menuPrincipalLoop();
 }

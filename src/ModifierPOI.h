@@ -11,7 +11,11 @@
 class ModifierPOI {
 public:
     int Setup(int ValeurPOIinitial);
+
+    void SetupCopy();
+
     int Loop();
+    void LoopCopy();
     int GetValeurPOI(); // Méthode pour récupérer ValeurPOI
     String GetStringValeurPOI(); // Méthode pour récupérer StringValeurPOI
 
@@ -30,6 +34,7 @@ public:
     int DataPOI;
     int *PtDataPOI = &DataPOI;
     char charDataPOI[9];
+    int ValeurPOICopy;
 
     bool EEPROMConnecter = false;
 
@@ -38,6 +43,7 @@ private:
     bool StatusState = false;
 
     void DrawButton();
+    void DrawButtonCopy();
     void Clear();
     void SetupOneWire();
 

@@ -6,6 +6,7 @@
 
 SDcard sdCard;
 ClavierNumerique claviernumeriqueheure;
+menuPrincipal menuP;
 
 void reglage::setup()
 {
@@ -21,14 +22,13 @@ void reglage::Menu1()
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton reglage de l'heure
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("Regler l'heure", 60, buttonYStart + 10);
+    M5.Lcd.drawString("Regler l'heure", 60, buttonYStart + 22);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 80, buttonWidth, buttonHeight, 8,
                          TFT_DARKGREY); // Bouton reglage de la date
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("Regler la date", 60, buttonYStart + 85);
-    M5.Lcd.drawString("", 60, buttonYStart + 105);
+    M5.Lcd.drawString("Regler la date", 60, buttonYStart + 102);
 
     // Bouton "Retour"
     int buttonRetourX = 20;                 // Position X pour le bouton "Retour"
@@ -52,7 +52,7 @@ void reglage::Menu2()
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton lire POI carte SD
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("lire POI carte SD", 60, buttonYStart + 10);
+    M5.Lcd.drawString("lire POI carte SD", 60, buttonYStart + 22);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 80, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton
     M5.Lcd.setTextColor(TFT_WHITE);
@@ -82,18 +82,17 @@ void reglage::Menu3()
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton lire POI carte SD
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("", 60, buttonYStart + 10);
+    M5.Lcd.drawString("", 60, buttonYStart + 22);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 80, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("", 60, buttonYStart + 85);
-    M5.Lcd.drawString("", 60, buttonYStart + 105);
+    M5.Lcd.drawString("", 60, buttonYStart + 102);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 160, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton reglage de l'heure
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("Retour", 100, buttonYStart + 180);
+    M5.Lcd.drawString("Retour", 100, buttonYStart + 182);
 }
 
 void reglage::Clear() { M5.Lcd.fillScreen(TFT_BLACK); }
@@ -127,8 +126,7 @@ void reglage::loop()
                         M5.Rtc.SetTime(&RTC_TimeStruct);
 
                         Serial.println("l'heure a ete modifiee");
-                        EtatMenu = 1;
-                        Menu1();
+                        MenuRetour = true;
                     }
                     else if (y > buttonYStart + 80 && y < buttonYStart + 80 + buttonHeight)
                     {
@@ -221,5 +219,5 @@ void reglage::enregistrerUtilisateur()
     String username = clavier.loop("Utilisateur : ");
     String password = clavier.loop("Mot de passe : ");
     registerUser(username.c_str(), password.c_str());
-    menuPrincipalLoop();
+    menuP.menuPrincipalLoop();
 }

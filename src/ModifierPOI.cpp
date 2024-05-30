@@ -73,7 +73,7 @@ void ModifierPOI::SetupOneWire()
     DataPOI =
 
         //
-    EEPROMConnecter = true;
+        EEPROMConnecter = true;
     Serial.println("EEPROMConnecter = true");
 }
 
@@ -337,34 +337,8 @@ int ModifierPOI::Loop()
                     // ValeurPOI = StringValeurPOI.toInt();
                     // Serial.print("valeur converetir après la saisi : ");
                     ValeurPOI = Clavier.recupererSaisieInt(TextInitiale);
-                    // Serial.println(ValeurPOI);
 
                     OneWireWrite();
-                    /*
-                     Serial.println("Valeur en therorie si ca marche : ");
-                     Serial.println("Valeur en therorie si ca marche : ");
-
-                     Serial.print("newData: ");
-                     for (int i = 0; i < 4; ++i)
-                     {
-                         Serial.print(newData[i],
-                                      HEX); // Print each byte in hexadecimal format
-                         Serial.print(" ");
-                     }
-                     Serial.println();
-                     Serial.println("Valeur en therorie si ca marche : ");
-                     printLargeBuffer(data, sizeof(data));
-
-                                  byte newData[8]; // Déclaration du tableau de 8 octets
-
-                                  // Read the first 8 bytes from the memory contents
-                                  eeprom.read(0, newData, 8);
-
-                                  // Store the first 8 bytes in the DataPOI variable
-                                  DataPOI = newData[0] | (newData[1] << 8) | (newData[2] <<
-                        16) | (newData[3] << 24); Serial.print("valeur de DataPOI : ");
-                                  Serial.println(DataPOI);
-                             */
 
                     Clear();
                     Serial.println("la valeur de CharDataPOI APRES la modification est  :" + String(charDataPOI));
@@ -373,9 +347,154 @@ int ModifierPOI::Loop()
 
                 else if (y > 185 && y < 235)
                 {
-                    // Bouton Déconnexion pressé
+                    // Bouton retour pressé
                     Clear();
                     return 3;
+                }
+            }
+        }
+    }
+}
+
+void ModifierPOI::SetupCopy()
+{
+    TextInitiale = "POI : ";
+    StatusState = false;
+    StringValeurPOI = String(ValeurPOI);
+    LoopCopy();
+}
+
+void ModifierPOI::DrawButtonCopy()
+{
+    // ValeurPOI = DataPOI;
+    M5.Lcd.fillScreen(TFT_BLACK);
+
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(2);
+    if (StatusState == true)
+    {
+        cardSD.setup();
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_GREEN); // Status
+        M5.Lcd.setTextColor(TFT_BLACK);
+        M5.Lcd.drawString("Status : Connecte", 55, 12);
+    }
+    else
+    {
+        M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED); // Status
+        M5.Lcd.drawString("Status : Deconecte", 55, 12);
+        strcpy(charDataPOI, ""); // Copie une chaîne vide dans charDataPOI
+    }
+
+    M5.Lcd.setTextColor(TFT_BLACK);
+    M5.Lcd.fillRoundRect(10, 37, 300, 32, 16, TFT_DARKGREY); // POI
+    M5.Lcd.drawString("POI : " + String(charDataPOI), 55, 49);
+    Serial.println("CharDataPOI" + String(charDataPOI));
+
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
+    M5.Lcd.drawString("Copier", 55, 95);
+
+    M5.Lcd.fillRoundRect(20, 130, 280, 50, 8, TFT_PURPLE); // Bouton Modifier POI
+    M5.Lcd.drawString("Coller", 55, 150);
+
+    M5.Lcd.fillRoundRect(20, 185, 280, 50, 8, TFT_RED); // Bouton Déconnexion
+    M5.Lcd.drawString("Retour", 55, 205);
+}
+
+void ModifierPOI::LoopCopy()
+{
+    DrawButtonCopy();
+    bool okButtonPressed = false;
+
+    while (true)
+    {
+
+        if (M5.Touch.ispressed())
+        {
+            // Récupération des coordonnées tactiles
+            Point p = M5.Touch.getPressPoint();
+            int x = p.x;
+            int y = p.y;
+
+            // Vérification des coordonnées pour déterminer quel bouton est pressé
+            if (x > 20 && x < 300)
+            {
+                if (y > 75 && y < 125)
+                {
+                    // Bouton Copy pressé
+                    SetupOneWire();
+                    if (EEPROMConnecter == false)
+                    {
+                        MessageNoEEPROM();
+                    }
+                    if (StatusState == false && EEPROMConnecter == true)
+                    {
+                        StatusState = true;
+                        Serial.println("EEPROMConnecter = true & StatusState = true");
+                        ValeurPOICopy = atoi(charDataPOI);
+                    }
+                    DrawButtonCopy();
+                }
+                else if (y > 130 && y < 180)
+                {
+                    if (StatusState == false)
+                    {
+                        M5.Lcd.fillScreen(BLACK);
+                        M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED);
+                        M5.Lcd.drawString("aucun POI en memoire", 35, 93 + 20);
+
+                        M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+                        M5.Lcd.drawString("OK", 135, 190 + 20);
+
+                        while (!okButtonPressed)
+                        {
+                            Point p = M5.Touch.getPressPoint();
+
+                            int x = p.x;
+                            int y = p.y;
+
+                            // Vérification des coordonnées pour déterminer quel bouton est
+                            // pressé
+                            if (x > 120 && x < 200 && y > 190 && y < 240)
+                            { // Bouton OK pressé
+                                okButtonPressed = true;
+                                Clear();
+                                DrawButtonCopy();
+                            }
+                        }
+                    }
+                }
+                if (StatusState == true && (y > 130 && y < 180))
+                {
+                    // Bouton Coller pressé
+
+                    Clear();
+                    Serial.println("test saisi 1");
+                    Serial.println("la valeur de CharDataPOI AVANT la modification est  :" + String(charDataPOI));
+                    // TextInitiale = "POI : ";
+                    SetupOneWire();
+                    ValeurPOI = ValeurPOICopy;
+                    Serial.println("atoi charDataPOI : ");
+                    Serial.print(ValeurPOI);
+                    OneWireWrite();
+
+                    M5.Lcd.fillScreen(BLACK);
+                    M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED);
+                    M5.Lcd.drawString("POI Ecrie avec succès", 35, 93 + 20);
+                    delay(2000);
+
+                    Clear();
+                    Serial.println("la valeur de CharDataPOI APRES la modification est  :" + String(charDataPOI));
+                    DrawButtonCopy();
+
+                }
+
+                else if (y > 185 && y < 235)
+                {
+                    // Bouton retour pressé
+                    Clear();
+                    StatusState == false;
+                    break;
                 }
             }
         }
