@@ -82,7 +82,7 @@ void reglage::Menu3()
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton lire POI carte SD
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("", 60, buttonYStart + 22);
+    M5.Lcd.drawString("Lire badge RFID", 60, buttonYStart + 22);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 80, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton
     M5.Lcd.setTextColor(TFT_WHITE);
@@ -166,6 +166,7 @@ void reglage::loop()
                     if (y > buttonYStart && y < buttonYStart + buttonHeight)
                     {
                         sdCard.read();
+                        Menu2();
                     }
                     else if (y > buttonYStart + 80 && y < buttonYStart + 80 + buttonHeight)
                     {
@@ -193,7 +194,7 @@ void reglage::loop()
                 {
                     if (y > buttonYStart && y < buttonYStart + buttonHeight)
                     {
-                        // Action pour EtatMenu 2, premier bouton
+                        // Action pour EtatMenu 2, premier bouton (RFID)
                     }
                     else if (y > buttonYStart + 80 && y < buttonYStart + 80 + buttonHeight)
                     {

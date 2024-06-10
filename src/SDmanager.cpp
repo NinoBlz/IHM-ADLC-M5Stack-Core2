@@ -85,7 +85,6 @@ void SDcard::read()
 {
     setup();
     Clear();
-
     myFile = SD.open("/donnee.txt", FILE_READ); // Open the file "/donnee.txt" in read mode.
     if (myFile)
     { 
@@ -100,12 +99,35 @@ void SDcard::read()
         }
         myFile.close();
         M5.lcd.setTextSize(2);
+    
+    M5.Lcd.fillRoundRect(20, buttonYStart + 160, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton reglage de l'heure
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.drawString("Retour", 100, buttonYStart + 182);
     }
     else
     {
         ErrorMessage("error opening /donnee.txt"); // If the file is not open.
     }
-    delay(2000);
+
+    bool retourpresed = false;
+    while (retourpresed == false){
+        Point p = M5.Touch.getPressPoint();
+
+        int x = p.x;
+        int y = p.y;
+
+        // Vérification des coordonnées pour déterminer quel bouton est
+        // pressé
+        if (y > buttonYStart + 160 && y < buttonYStart + 160 + buttonHeight)
+        { // Bouton retour pressé
+            retourpresed = true;
+            Clear();
+            break;
+            delay(300);
+        }
+    }
+
 }
 
 void SDcard::Clear() { M5.Lcd.fillScreen(BLACK); }

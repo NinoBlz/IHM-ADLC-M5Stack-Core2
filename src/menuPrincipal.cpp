@@ -24,13 +24,9 @@ void menuPrincipal::menuPrincipalLoop() {
   M5.Lcd.setTextSize(2);
   M5.Lcd.drawString("Identification", 60, buttonYStart + 22);
 
-  // Calcul de la position Y du bouton "Réglage" pour qu'il soit au milieu
-  //int reglageYStart = buttonYStart + buttonHeight + buttonSpacing;
   M5.Lcd.fillRoundRect(20, reglageYStart, buttonWidth, buttonHeight, 8, TFT_BLUE); // Bouton Réglage
   M5.Lcd.drawString("Reglage", 60, reglageYStart + 22);
 
-  // Calcul de la position Y du bouton "Eteindre" pour qu'il soit après "Réglage"
-  //int eteindreYStart = reglageYStart + buttonHeight + buttonSpacing;
   M5.Lcd.fillRoundRect(20, eteindreYStart, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton Eteindre
   M5.Lcd.drawString("Eteindre", 60, eteindreYStart + 22);
 
@@ -44,7 +40,7 @@ void menuPrincipal::menuPrincipalLoop() {
       int y = p.y;
 
       // Vérification des coordonnées pour déterminer quel bouton est pressé
-      if (x > 20 && x < 300) { // Ajustement de la condition x pour correspondre à la largeur des boutons
+      if (x > 20 && x < 300) {
         if (y > buttonYStart && y < buttonYStart + buttonHeight) {
           // Bouton Identification pressé
           M5.Axp.SetVibration(true);  
@@ -58,9 +54,9 @@ void menuPrincipal::menuPrincipalLoop() {
           delay(100);
           M5.Axp.SetVibration(false);  
           reglagemenu.setup();
-          //reglagemenu.loop();
           break;
         } else if (y > eteindreYStart && y < eteindreYStart + buttonHeight) {
+          //Bouton Eteindre pressé
           M5.Axp.SetVibration(true);  
           delay(100);
           M5.Axp.SetVibration(false);  
@@ -69,7 +65,6 @@ void menuPrincipal::menuPrincipalLoop() {
         }
       }
     }
-    //delay(100);
   }
 }  
 

@@ -85,7 +85,7 @@ void ModifierPOI::OneWireWrite()
     for (int i = 7; i >= 0; i--)
     {
         newData[i] = ValeurPOI % 10 + ASCII; // Extraire le dernier chiffre de l'entier //48 = decimal vers
-                                             // ascii (mettre en constante dans le debut du code)
+                                             // ascii
         ValeurPOI /= 10;                     // Supprimer le dernier chiffre de l'entier
     }
 
@@ -113,6 +113,7 @@ void ModifierPOI::OneWireWrite()
     {
         Serial.print("Failed to write data @ address ");
         Serial.println(address);
+        MessageErreurEcriture();
     }
     Serial.println("");
 
@@ -256,6 +257,36 @@ void ModifierPOI::MessageNoEEPROM()
     }
 }
 
+void ModifierPOI::MessageErreurEcriture(){
+        bool okButtonPressed = false;
+
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.fillRoundRect(20, 50, 280, 120, 16, TFT_RED); // Adjust the tailing of the rectangle
+    M5.Lcd.drawString("l'ecriture", 35, 50 + 20);
+    M5.Lcd.drawString("a ecouhee", 60, 50 + 45);
+    M5.Lcd.drawString("PORT GPIO 27", 75, 50 + 70);
+
+    M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
+    M5.Lcd.drawString("OK", 135, 190 + 20);
+
+    while (!okButtonPressed)
+    {
+        Point p = M5.Touch.getPressPoint();
+
+        int x = p.x;
+        int y = p.y;
+
+        // Vérification des coordonnées pour déterminer quel bouton est pressé
+        if (x > 120 && x < 200 && y > 190 && y < 240)
+        { // Bouton OK pressé
+            okButtonPressed = true;
+            Clear();
+            delay(500);
+            DrawButton();
+        }
+    }
+}
+
 int ModifierPOI::Loop()
 {
     DrawButton();
@@ -331,11 +362,6 @@ int ModifierPOI::Loop()
                     Serial.println("test saisi 1");
                     Serial.println("la valeur de CharDataPOI AVANT la modification est  :" + String(charDataPOI));
                     TextInitiale = "POI : ";
-                    // StringValeurPOI = Clavier.recupererSaisie(TextInitiale);
-                    //  Serial.println("la valeur du POI a été saisi via le clavier : " +
-                    //  StringValeurPOI);
-                    // ValeurPOI = StringValeurPOI.toInt();
-                    // Serial.print("valeur converetir après la saisi : ");
                     ValeurPOI = Clavier.recupererSaisieInt(TextInitiale);
 
                     OneWireWrite();
@@ -486,7 +512,6 @@ void ModifierPOI::LoopCopy()
                     Clear();
                     Serial.println("la valeur de CharDataPOI APRES la modification est  :" + String(charDataPOI));
                     DrawButtonCopy();
-
                 }
 
                 else if (y > 185 && y < 235)
