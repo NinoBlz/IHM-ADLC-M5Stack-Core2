@@ -3,6 +3,7 @@
 #include "reglage.h"
 #include "ModifierPOI.h"
 #include "SDmanager.h"
+#include "System.h"
 
 // Variables pour stocker les coordonnées du point de pression
 int16_t x, y;
@@ -13,6 +14,8 @@ void menuPrincipal::clear() {
 
 reglage reglagemenu;
 ModifierPOI ModifierPOImenu;
+System SystemM5;
+
 
 
 
@@ -32,7 +35,17 @@ void menuPrincipal::menuPrincipalLoop() {
 
   delay(500);
 
+  SystemM5.update();
+  uint32_t previousMillis = millis();
+
   while (true) {
+    uint32_t currentMillis = millis();
+    if (currentMillis - previousMillis >= 100) {
+      previousMillis = currentMillis;
+      SystemM5.update(); // Mettre à jour l'affichage de la date et de l'heure
+    }
+
+
     if (M5.Touch.ispressed()) {
       // Récupération des coordonnées tactiles
       Point p = M5.Touch.getPressPoint();
@@ -60,7 +73,8 @@ void menuPrincipal::menuPrincipalLoop() {
           M5.Axp.SetVibration(true);  
           delay(100);
           M5.Axp.SetVibration(false);  
-          M5.Axp.DeepSleep();
+          //M5.Axp.DeepSleep();
+          messageEteindre();
           break;
         }
       }
@@ -125,4 +139,57 @@ void menuPrincipal::menuSelection (){
     }
     //delay(100);
   }
+}
+
+void menuPrincipal::messageEteindre()
+{
+    // Clear the display
+    M5.Lcd.clear(TFT_BLACK);
+
+    // Draw red rectangle 
+    M5.Lcd.fillRoundRect(20, 60, 280, 100, 8, TFT_RED);
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.setCursor(30, 80);
+    M5.Lcd.println("Voulez-vous vraiment");
+    M5.Lcd.setCursor(30, 110);
+    M5.Lcd.println("etreindre le module ?");
+
+    // Draw the "OUI" button
+    M5.Lcd.fillRoundRect(50, 180, 80, 40, 8, TFT_GREEN);
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.drawString("OUI", 70, 190);
+
+    // Draw the "NON" button
+    M5.Lcd.fillRoundRect(190, 180, 80, 40, 8, TFT_RED);
+    M5.Lcd.setTextColor(TFT_WHITE);
+    M5.Lcd.setTextSize(2);
+    M5.Lcd.drawString("NON", 210, 190);
+
+
+    while (true)
+    {
+        Point p = M5.Touch.getPressPoint();
+        int x = p.x;
+        int y = p.y;
+
+        if (x > 50 && x < 130 && y > 180 && y < 220)
+        { // "OUI" button pressed
+            M5.Lcd.clear(TFT_BLACK);
+            M5.Lcd.setCursor(80, 100);
+            M5.Lcd.setTextSize(2);
+            M5.Lcd.setTextColor(TFT_WHITE);
+            M5.Lcd.println("Extinction...");
+            delay(500); // delay
+            M5.Axp.PowerOff(); //etein le module
+        }
+        else if (x > 190 && x < 270 && y > 180 && y < 220)
+        { // "NON" button pressed
+            break; 
+        }
+
+        delay(100); 
+
+    }
 }

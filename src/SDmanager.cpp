@@ -87,48 +87,117 @@ void SDcard::read()
     Clear();
     myFile = SD.open("/donnee.txt", FILE_READ); // Open the file "/donnee.txt" in read mode.
     if (myFile)
-    { 
-        M5.lcd.setTextSize(1);
-        M5.lcd.setCursor(0, 0);
-        M5.lcd.println("POI enregistrer sur la carte SD :");
-        M5.lcd.println("");
-       
+    {
+        int totalLines = 0;
+
+        // First pass: count the number of lines
         while (myFile.available())
         {
-            M5.Lcd.write(myFile.read());
+            myFile.readStringUntil('\n');
+            totalLines++;
+        }
+
+        // Allocate an array to store the lines
+        String lines[totalLines];
+
+        // Second pass: read the file line by line and store it in the lines array
+        myFile.seek(0); // Reset file position to the beginning
+        int lineCount = 0;
+        while (myFile.available())
+        {
+            lines[lineCount++] = myFile.readStringUntil('\n');
         }
         myFile.close();
-        M5.lcd.setTextSize(2);
-    
-    M5.Lcd.fillRoundRect(20, buttonYStart + 160, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton reglage de l'heure
-    M5.Lcd.setTextColor(TFT_WHITE);
-    M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("Retour", 100, buttonYStart + 182);
+
+        const int linesPerPage = 20;
+        int currentPage = 0;
+        int endPage = (totalLines + linesPerPage - 1) / linesPerPage; // calule le nombre de page 
+
+        while (true)
+        {
+            // Display the current page
+            Clear();
+            M5.lcd.setTextSize(1);
+            M5.lcd.setCursor(0, 0);
+            Serial.print("nombre de ligne dans donnee.txt de la carte SD : ");
+            Serial.println(totalLines);
+
+            M5.lcd.print("POI enregistrer sur la carte SD");
+            M5.lcd.print("     page : ");
+            M5.lcd.setTextSize(2);
+            M5.lcd.print(currentPage+1);
+            M5.lcd.print("/");
+            M5.lcd.println(endPage);
+            M5.lcd.setTextSize(1);
+            
+
+            int startLine = currentPage * linesPerPage;
+            int endLine = min(startLine + linesPerPage, totalLines);
+
+            for (int i = startLine; i < endLine; ++i)
+            {
+                M5.lcd.println(lines[i]);
+            }
+
+            // Draw "Retour" button
+            M5.Lcd.fillRoundRect(20, buttonYStart + 160, buttonWidth, buttonHeight, 8, TFT_RED);
+            M5.Lcd.setTextColor(TFT_WHITE);
+            M5.Lcd.setTextSize(2);
+            M5.Lcd.drawString("Retour", 100, buttonYStart + 182);
+
+            // Draw navigation buttons
+            M5.Lcd.fillRoundRect(250, 20, 70, buttonHeight, 8, TFT_BLUE);
+            M5.Lcd.drawString("Ʌ", 280, 40); // Up button
+
+            M5.Lcd.fillRoundRect(250, 100, 70, buttonHeight, 8, TFT_BLUE);
+            M5.Lcd.drawString("v", 280, 120); // Down button
+
+            // Wait for a button press
+            bool buttonPressed = false;
+            while (!buttonPressed)
+            {
+                Point p = M5.Touch.getPressPoint();
+                int x = p.x;
+                int y = p.y;
+
+                if (y > buttonYStart + 160 && y < buttonYStart + 160 + buttonHeight)
+                { // "Retour" button pressed
+                    Clear();
+                    return;
+                }
+                else if (x > 250 && x < 250 + 70)
+                {
+                    if (y > 20 && y < 20 + buttonHeight)
+                    { // Up button pressed
+                        if (currentPage > 0)
+                        {
+                            currentPage--;
+                            buttonPressed = true;
+                        }
+                    }
+                    else if (y > 100 && y < 100 + buttonHeight)
+                    { // Down button pressed
+                        if ((currentPage + 1) * linesPerPage < totalLines)
+                        {
+                            currentPage++;
+                            buttonPressed = true;
+                        }
+                    }
+                }
+
+                delay(100); // Small delay to debounce touch input
+            }
+        }
     }
     else
     {
         ErrorMessage("error opening /donnee.txt"); // If the file is not open.
     }
-
-    bool retourpresed = false;
-    while (retourpresed == false){
-        Point p = M5.Touch.getPressPoint();
-
-        int x = p.x;
-        int y = p.y;
-
-        // Vérification des coordonnées pour déterminer quel bouton est
-        // pressé
-        if (y > buttonYStart + 160 && y < buttonYStart + 160 + buttonHeight)
-        { // Bouton retour pressé
-            retourpresed = true;
-            Clear();
-            break;
-            delay(300);
-        }
-    }
-
 }
+
+
+
+
 
 void SDcard::Clear() { M5.Lcd.fillScreen(BLACK); }
 

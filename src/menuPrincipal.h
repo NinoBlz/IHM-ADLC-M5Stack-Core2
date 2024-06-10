@@ -12,6 +12,8 @@ void menuPrincipalLoop();
 void menuSelection();
 void drawMenuSelection();
 
+void messageEteindre();
+
 
 // Taille et espacement uniformes pour tous les boutons
   int buttonWidth = 280;

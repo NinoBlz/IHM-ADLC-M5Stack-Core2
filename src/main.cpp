@@ -1,11 +1,11 @@
 #include <M5Core2.h>
 #include "menuPrincipal.h"
-#include "UserManager.h"
 #include <string>
 //#include "menu.h"
 #include "ModifierPOI.h"
 #include "System.h"
 #include "reglage.h"
+#include "Image.c"
 
 #define ONE_WIRE_BUS 27
 
@@ -13,7 +13,6 @@
 
 
 menuPrincipal menu;
-UserManager userManager; // Déclaration de userManager pour l'utiliser dans toute la fonction
 String identifiant;
 String MDP;
 ModifierPOI POI;
@@ -26,6 +25,8 @@ void setup() {
   M5.begin();
  // menuPrincipalSetup();
   Serial.begin(115200);
+  systemM5.drawBitmap(TCLimage_RGB, /*TCLimage_width*/320, /*TCLimage_height*/240, 0, 0);
+  delay(2000);
   menu.clear();
   systemM5.begin();
   systemM5.update();

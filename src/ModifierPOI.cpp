@@ -197,7 +197,7 @@ void ModifierPOI::DrawButton()
     else
     {
         M5.Lcd.fillRoundRect(10, 0, 300, 32, 16, TFT_RED); // Status
-        M5.Lcd.drawString("Status : Deconecte", 55, 12);
+        M5.Lcd.drawString("Status : Deconnecte", 55, 12);
         strcpy(charDataPOI, ""); // Copie une chaîne vide dans charDataPOI
     }
 
@@ -216,7 +216,7 @@ void ModifierPOI::DrawButton()
     {
         M5.Lcd.setTextColor(TFT_WHITE);
         M5.Lcd.fillRoundRect(20, 75, 280, 50, 8, TFT_GREEN); // Bouton Connection
-        M5.Lcd.drawString("Connection", 55, 95);
+        M5.Lcd.drawString("Connexion", 55, 95);
     }
 
     M5.Lcd.fillRoundRect(20, 130, 280, 50, 8, TFT_PURPLE); // Bouton Modifier POI
