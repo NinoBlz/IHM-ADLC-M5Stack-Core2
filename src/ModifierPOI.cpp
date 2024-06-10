@@ -263,7 +263,7 @@ void ModifierPOI::MessageErreurEcriture(){
     M5.Lcd.fillScreen(BLACK);
     M5.Lcd.fillRoundRect(20, 50, 280, 120, 16, TFT_RED); // Adjust the tailing of the rectangle
     M5.Lcd.drawString("l'ecriture", 35, 50 + 20);
-    M5.Lcd.drawString("a ecouhee", 60, 50 + 45);
+    M5.Lcd.drawString("a echouhee", 60, 50 + 45);
     M5.Lcd.drawString("PORT GPIO 27", 75, 50 + 70);
 
     M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
@@ -330,7 +330,7 @@ int ModifierPOI::Loop()
                     {
                         M5.Lcd.fillScreen(BLACK);
                         M5.Lcd.fillRoundRect(20, 95, 280, 50, 8, TFT_RED);
-                        M5.Lcd.drawString("EEPROM Non connecter   ", 35, 93 + 20);
+                        M5.Lcd.drawString("EEPROM Non connectee   ", 35, 93 + 20);
 
                         M5.Lcd.fillRoundRect(120, 190, 80, 50, 8, TFT_RED); // Bouton OK
                         M5.Lcd.drawString("OK", 135, 190 + 20);

@@ -19,7 +19,8 @@ public:
 
     RTC_TimeTypeDef time;
     RTC_DateTypeDef date;
-    void drawBitmap(const uint8_t *bitmap, int w, int h, int x, int y);
+    void drawImageRGB(const uint8_t *bitmap, int w, int h, int x, int y);
+    void reglageLuminosite();
 
 private:
     void displayTimeAndBattery();

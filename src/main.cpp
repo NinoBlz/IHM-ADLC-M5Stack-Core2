@@ -25,7 +25,7 @@ void setup() {
   M5.begin();
  // menuPrincipalSetup();
   Serial.begin(115200);
-  systemM5.drawBitmap(TCLimage_RGB, /*TCLimage_width*/320, /*TCLimage_height*/240, 0, 0);
+  systemM5.drawImageRGB(TCLimage_RGB, /*TCLimage_width*/320, /*TCLimage_height*/240, 0, 0);
   delay(2000);
   menu.clear();
   systemM5.begin();
