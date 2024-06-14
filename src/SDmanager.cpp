@@ -147,10 +147,10 @@ void SDcard::read()
 
             // Draw navigation buttons
             M5.Lcd.fillRoundRect(250, 20, 70, buttonHeight, 8, TFT_BLUE);
-            M5.Lcd.drawString("Ʌ", 280, 40); // Up button
+            M5.Lcd.drawString("haut", 260, 40); // Up button
 
             M5.Lcd.fillRoundRect(250, 100, 70, buttonHeight, 8, TFT_BLUE);
-            M5.Lcd.drawString("v", 280, 120); // Down button
+            M5.Lcd.drawString("bas", 260, 120); // Down button
 
             // Wait for a button press
             bool buttonPressed = false;

@@ -89,7 +89,7 @@ void reglage::Menu3()
     M5.Lcd.fillRoundRect(20, buttonYStart + 80, buttonWidth, buttonHeight, 8, TFT_DARKGREY); // Bouton
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("Luminosite", 60, buttonYStart + 102);
+    M5.Lcd.drawString("A propos", 60, buttonYStart + 102);
 
     M5.Lcd.fillRoundRect(20, buttonYStart + 160, buttonWidth, buttonHeight, 8, TFT_RED); // Bouton reglage de l'heure
     M5.Lcd.setTextColor(TFT_WHITE);
@@ -200,7 +200,7 @@ void reglage::loop()
                     }
                     else if (y > buttonYStart + 80 && y < buttonYStart + 80 + buttonHeight)
                     {
-                        Sysstem.reglageLuminosite();
+                        Sysstem.aPropos();
                         Menu3();
                     }
                     else if (y > buttonYStart + 160 && y < buttonYStart + 160 + buttonHeight)

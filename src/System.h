@@ -2,7 +2,7 @@
 #define SYSTEM_H
 
 #include <M5Core2.h>
-//#include <stdint.h>
+
 
 
 class System {
@@ -20,7 +20,11 @@ public:
     RTC_TimeTypeDef time;
     RTC_DateTypeDef date;
     void drawImageRGB(const uint8_t *bitmap, int w, int h, int x, int y);
-    void reglageLuminosite();
+    void aPropos();
+    void page2();
+    void page1();
+    void showButtons();
+    int page = 1;
 
 private:
     void displayTimeAndBattery();

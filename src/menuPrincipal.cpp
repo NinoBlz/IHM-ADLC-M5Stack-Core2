@@ -5,6 +5,8 @@
 #include "SDmanager.h"
 #include "System.h"
 
+
+
 // Variables pour stocker les coordonnées du point de pression
 int16_t x, y;
 
@@ -189,7 +191,6 @@ void menuPrincipal::messageEteindre()
             break; 
         }
 
-        delay(100); 
 
     }
 }
