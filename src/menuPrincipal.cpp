@@ -4,7 +4,8 @@
 #include "ModifierPOI.h"
 #include "SDmanager.h"
 #include "System.h"
-
+#include "Identification.h"
+#include "clavier.h"
 
 
 // Variables pour stocker les coordonnées du point de pression
@@ -17,6 +18,8 @@ void menuPrincipal::clear() {
 reglage reglagemenu;
 ModifierPOI ModifierPOImenu;
 System SystemM5;
+Identification identification;
+
 
 
 
@@ -192,5 +195,34 @@ void menuPrincipal::messageEteindre()
         }
 
 
+    }
+}
+
+void menuPrincipal::verifierUtilisateur() {
+    Identification identification;
+
+    // Initialiser SPIFFS et la base de données
+    identification.initSPIFFS();
+    identification.initBDD();
+
+    Clavier clavier;
+    clavier.setup();
+    delay(500);
+
+    String ID_Utilisateur = clavier.loop("Utilisateur : ");
+    String MDP_Utilisateur = clavier.loop("Mot de passe : ");
+
+    std::string identifiant = ID_Utilisateur.c_str();
+    std::string motDePasse = MDP_Utilisateur.c_str();
+
+    bool userExists = identification.verifierUtilisateur(identifiant, motDePasse);
+
+    M5.Lcd.clear();
+    M5.Lcd.setCursor(0, 0);
+
+    if (userExists) {
+        M5.Lcd.print("User found.");
+    } else {
+        M5.Lcd.print("User not found.");
     }
 }

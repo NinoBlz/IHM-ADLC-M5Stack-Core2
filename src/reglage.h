@@ -19,7 +19,9 @@ class reglage {
 
     void Clear();
 
-    void enregistrerUtilisateur();
+    void ajouterUtilisateur();
+
+
 
     int EtatMenu = 1;
 

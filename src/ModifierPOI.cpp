@@ -363,8 +363,12 @@ int ModifierPOI::Loop()
                     Serial.println("la valeur de CharDataPOI AVANT la modification est  :" + String(charDataPOI));
                     TextInitiale = "POI : ";
                     ValeurPOI = Clavier.recupererSaisieInt(TextInitiale);
-
-                    OneWireWrite();
+                    if (ValeurPOI != 123456789){
+                        OneWireWrite();
+                    }
+                    else if (ValeurPOI == 123456789){
+                        MessageErreurEcriture();
+                    } 
 
                     Clear();
                     Serial.println("la valeur de CharDataPOI APRES la modification est  :" + String(charDataPOI));

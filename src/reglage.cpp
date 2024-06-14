@@ -5,6 +5,7 @@
 #include "menuPrincipal.h"
 #include "System.h"
 
+
 SDcard sdCard;
 ClavierNumerique claviernumeriqueheure;
 menuPrincipal menuP;
@@ -120,17 +121,23 @@ void reglage::loop()
                         heure = claviernumeriqueheure.recupererSaisieInt("Heure : ");
                         minute = claviernumeriqueheure.recupererSaisieInt("Minute : ");
                         seconde = claviernumeriqueheure.recupererSaisieInt("Seconde : ");
-                        if (heure != 42460000||minute != 42460000 || seconde != 42460000){
+
                         RTC_TimeTypeDef RTC_TimeStruct;
-                        RTC_TimeStruct.Hours = heure;
-                        RTC_TimeStruct.Minutes = minute;
-                        RTC_TimeStruct.Seconds = seconde;
+                        if (heure != 123456789){
+                        RTC_TimeStruct.Hours = heure;}
+                        if (minute != 123456789){
+                        RTC_TimeStruct.Minutes = minute;}
+                        if (seconde != 123456789){
+                        RTC_TimeStruct.Seconds = seconde;}
+
+                        if (heure != 123456789||minute != 123456789 || seconde != 123456789){
                         M5.Rtc.SetTime(&RTC_TimeStruct);
                         Serial.println("l'heure a ete modifiee");
                         Clear();
                         EtatMenu = 1;
                         Menu1();
                         }
+
                         else {
                         Clear();
                         EtatMenu = 1;
@@ -144,7 +151,7 @@ void reglage::loop()
                         annee = claviernumeriqueheure.recupererSaisieInt("Annee : ");
                         mois = claviernumeriqueheure.recupererSaisieInt("Mois : ");
                         jour = claviernumeriqueheure.recupererSaisieInt("Jour : ");
-                    if (heure != 42460000||minute != 42460000 || seconde != 42460000){
+                    if (heure != 123456789||minute != 123456789 || seconde != 123456789){
                         RTC_DateTypeDef RTC_DateStruct;
                         RTC_DateStruct.Year = annee;
                         RTC_DateStruct.Month = mois;
@@ -188,7 +195,7 @@ void reglage::loop()
                     else if (y > buttonYStart + 80 && y < buttonYStart + 80 + buttonHeight)
                     {
                         // Bouton enregistrer utilisateur pressé
-                        enregistrerUtilisateur(); // Appel de la fonction pour enregistrer un utilisateur
+                        ajouterUtilisateur(); // Appel de la fonction pour enregistrer un utilisateur
                     }
                     else if (x > 20 && x < 20 + buttonWidth / 2 - 10 && y > buttonYStart + 160 &&
                              y < buttonYStart + 160 + buttonHeight)
@@ -230,13 +237,20 @@ void reglage::loop()
     }
 }
 
-void reglage::enregistrerUtilisateur()
-{
+void reglage::ajouterUtilisateur() {
     Clavier clavier;
-    clavier.setup(); // Initialiser le clavier
+    Identification identification;
+    clavier.setup();
     delay(500);
-    String username = clavier.loop("Utilisateur : ");
-    String password = clavier.loop("Mot de passe : ");
-    registerUser(username.c_str(), password.c_str());
+    String identifiant = clavier.loop("Utilisateur : ");
+    String motDePasse = clavier.loop("Mot de passe : ");
+
+    Serial.printf("Identifiant: %s, Mot de passe: %s\n", identifiant.c_str(), motDePasse.c_str());
+
+    identification.ajouterUtilisateur(identifiant.c_str(), motDePasse.c_str());
+
+    M5.Lcd.clear();
+    M5.Lcd.setCursor(0, 0);
+
     menuP.menuPrincipalLoop();
 }

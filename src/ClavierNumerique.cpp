@@ -41,7 +41,6 @@ void ClavierNumerique::dessinerTouche(int x, int y, const char *label)
 
     // Configurer la couleur du texte en blanc
     M5.Lcd.setTextColor(WHITE);
-    // Centrer le texte dans le bouton. Vous devrez peut-être ajuster l'offset pour bien centrer le texte
     M5.Lcd.setCursor(x + (toucheWidth / 2 - 10), y + (toucheHeight / 2 - 10));
     M5.Lcd.print(label);
 
@@ -51,6 +50,8 @@ void ClavierNumerique::dessinerTouche(int x, int y, const char *label)
     {
         int x = 40 + i * 112; //+ i * (toucheWidth + 65) + toucheHeight / 2;
         int y = 228;
+        if (saisie == 0){buttonLabels[0] = "ANNULER";}
+        else{buttonLabels[0] = "EFFACER";}  
         M5.Lcd.drawCentreString(buttonLabels[i], x, y, 1);
     }
 }
@@ -59,7 +60,7 @@ String ClavierNumerique::recupererSaisie(String TextInitialeClavier)
 {
     saisie = "";
     M5.Lcd.fillScreen(BLACK);
-    annulersaisie = "42460000";
+    annulersaisie = "123456789";
     delay(600);
     afficherClavier();
     delay(100);

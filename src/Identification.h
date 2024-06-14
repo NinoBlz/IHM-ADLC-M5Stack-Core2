@@ -3,11 +3,32 @@
 
 #include <M5Core2.h>
 #include <sqlite3.h>
+#include <iostream>
+#include <string>
+#include <SPIFFS.h>
 
-extern sqlite3* db;
+using namespace std;
 
-void setupIdentification();
-void registerUser(const char* username, const char* password);
-bool checkCredentials(const char* username, const char* password);
+class Identification {
+public:
+    Identification();
+    ~Identification();
+
+    void initSPIFFS();
+    void initBDD();
+    void ajouterUtilisateur(const char* identifiant, const char* motDePasse);
+    bool verifierUtilisateur(const std::string &identifiant, const std::string &motDePasse);
+    void checkSPIFFSSpace();
+    static void freeMemory(); // Déclaration de freeMemory
+
+    void verifyDatabaseSchema();
+
+private:
+    sqlite3 *db;
+    void creerTableUtilisateur();
+    bool doesTableExist(const char* tableName);
+};
+
+
 
 #endif
