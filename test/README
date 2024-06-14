@@ -9,3 +9,21 @@ in the development cycle.
 
 More information about PlatformIO Unit Testing:
 - https://docs.platformio.org/en/latest/advanced/unit-testing/index.html
+
+
+hadware : M5Stack Core2 ESP32
+
+
+La resistance doit etre de 4,7Kohm
+le port GPIO a utilisé est le port 27 défini dans "main.cpp" ligne 12 :  #define ONE_WIRE_BUS 27
+
+Github du projet : https://github.com/NinoBlz/IHM-ADLC-M5Stack-Core2
+
+Développeur :
+    - Nino BELUZE
+        -> https://github.com/NinoBlz
+
+    - Sébastien CASINI
+
+
+
