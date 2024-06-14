@@ -13,6 +13,7 @@ public:
     int recupererSaisieInt(String TextInitialeClavier);
     void setup();
 
+    String annulersaisie;
     int nbColonnes = 3;
     int nbRangees = 4;
     int toucheWidth = 100; // Augmenter la largeur pour utiliser toute la largeur

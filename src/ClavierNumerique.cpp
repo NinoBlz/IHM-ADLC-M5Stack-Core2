@@ -59,6 +59,7 @@ String ClavierNumerique::recupererSaisie(String TextInitialeClavier)
 {
     saisie = "";
     M5.Lcd.fillScreen(BLACK);
+    annulersaisie = "42460000";
     delay(600);
     afficherClavier();
     delay(100);
@@ -74,6 +75,9 @@ String ClavierNumerique::recupererSaisie(String TextInitialeClavier)
             if (saisie.length() > 0)
             { // Empêche l'effacement du texte initial
                 saisie.remove(saisie.length() - 1);
+            }
+            else if (saisie == 0){
+                return annulersaisie;
             }
         }
 
