@@ -18,7 +18,6 @@ void menuPrincipal::clear() {
 reglage reglagemenu;
 ModifierPOI ModifierPOImenu;
 System SystemM5;
-Identification identification;
 
 
 
@@ -64,7 +63,7 @@ void menuPrincipal::menuPrincipalLoop() {
           M5.Axp.SetVibration(true);  
           delay(100);
           M5.Axp.SetVibration(false);  
-          menuSelection();
+          verifierUtilisateur();        
           break;
         } else if (y > reglageYStart && y < reglageYStart + buttonHeight) {
           // Bouton Réglage pressé
@@ -222,7 +221,11 @@ void menuPrincipal::verifierUtilisateur() {
 
     if (userExists) {
         M5.Lcd.print("User found.");
+        delay(1000);  // Attendre un peu pour que l'utilisateur puisse lire le message
+        menuSelection();  // Afficher le menu de sélection
     } else {
         M5.Lcd.print("User not found.");
+        delay(2000);  // Attendre un peu pour que l'utilisateur puisse lire le message
+        menuPrincipalLoop();  // Revenir au menu principal
     }
 }

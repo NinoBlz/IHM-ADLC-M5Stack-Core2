@@ -11,7 +11,6 @@ Identification::~Identification() {
     }
 }
 
-
 void Identification::initSPIFFS() {
     if (!SPIFFS.begin(true)) {
         Serial.println("SPIFFS Mount Failed");
@@ -21,11 +20,13 @@ void Identification::initSPIFFS() {
     File dbFile = SPIFFS.open("/spiffs/users.db", FILE_READ);
     if (!dbFile) {
         Serial.println("Failed to open users.db");
-        return;
+    } else {
+        Serial.printf("users.db exists, size: %d bytes\n", dbFile.size());
+        dbFile.close();
     }
 
-    Serial.printf("users.db exists, size: %d bytes\n", dbFile.size());
-    dbFile.close();
+    // Check free space
+    checkSPIFFSSpace();
 }
 
 void Identification::initBDD() {
@@ -35,10 +36,16 @@ void Identification::initBDD() {
     }
 
     if (!SPIFFS.exists("/spiffs/users.db")) {
+        Serial.println("Database file does not exist, creating a new one.");
         File file = SPIFFS.open("/spiffs/users.db", FILE_WRITE);
         if (!file) {
-            Serial.println("Failed to create database file");
-            return;
+            Serial.println("Failed to create database file. Reformatting SPIFFS...");
+            reformatSPIFFS();
+            file = SPIFFS.open("/spiffs/users.db", FILE_WRITE);
+            if (!file) {
+                Serial.println("Failed to create database file even after reformatting SPIFFS");
+                return;
+            }
         }
         file.close();
 
@@ -54,10 +61,6 @@ void Identification::initBDD() {
         }
 
         creerTableUtilisateur();
-
-        // Add users directly for testing
-        ajouterUtilisateur("123456789", "123456789");
-        ajouterUtilisateur("ninobeluze", "ninobeluze");
     } else {
         int rc = sqlite3_open("/spiffs/users.db", &db);
         if (rc != SQLITE_OK) {
@@ -69,13 +72,14 @@ void Identification::initBDD() {
             Serial.println("Database handle is NULL");
             return;
         }
+
+        // Ensure the table exists even if the file is present
+        creerTableUtilisateur();
     }
 }
 
 void Identification::creerTableUtilisateur() {
-    const char* sqlCreateTable = "CREATE TABLE IF NOT EXISTS Utilisateur ("
-                                 "identifiant TEXT PRIMARY KEY, "
-                                 "motDePasse TEXT);";
+    const char *sqlCreateTable = "CREATE TABLE IF NOT EXISTS Utilisateur (id INTEGER PRIMARY KEY, identifiant TEXT UNIQUE, motDePasse TEXT);";
     char *errMsg = 0;
     int rc = sqlite3_exec(db, sqlCreateTable, 0, 0, &errMsg);
     if (rc != SQLITE_OK) {
@@ -85,6 +89,7 @@ void Identification::creerTableUtilisateur() {
         Serial.println("Table created successfully or already exists");
     }
 }
+
 
 void Identification::ajouterUtilisateur(const char* identifiant, const char* motDePasse) {
     const char *sqlInsert = "INSERT INTO Utilisateur (identifiant, motDePasse) VALUES (?, ?);";
@@ -157,7 +162,7 @@ void Identification::checkSPIFFSSpace() {
     Serial.printf("Total space: %d\n", SPIFFS.totalBytes());
     Serial.printf("Used space: %d\n", SPIFFS.usedBytes());
     Serial.printf("Free space: %d\n", SPIFFS.totalBytes() - SPIFFS.usedBytes());
-} 
+}
 
 void Identification::freeMemory() {
     Serial.printf("Free heap before operation: %d\n", ESP.getFreeHeap());
@@ -181,4 +186,12 @@ void Identification::verifyDatabaseSchema() {
     }
 
     sqlite3_finalize(stmt);
+}
+
+void Identification::reformatSPIFFS() {
+    if (SPIFFS.format()) {
+        Serial.println("SPIFFS formatted successfully");
+    } else {
+        Serial.println("SPIFFS format failed");
+    }
 }

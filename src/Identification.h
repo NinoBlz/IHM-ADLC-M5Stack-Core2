@@ -23,10 +23,11 @@ public:
 
     void verifyDatabaseSchema();
 
-private:
+    void reformatSPIFFS();
+
+  private:
     sqlite3 *db;
     void creerTableUtilisateur();
-    bool doesTableExist(const char* tableName);
 };
 
 

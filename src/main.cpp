@@ -6,12 +6,10 @@
 #include "System.h"
 #include "reglage.h"
 #include "Image.c"
-
+#include"Identification.h"
 
 
 #define ONE_WIRE_BUS 27
-
-
 
 
 menuPrincipal menu;
@@ -19,6 +17,7 @@ String identifiant;
 String MDP;
 ModifierPOI POI;
 System systemM5;
+Identification identification; 
 unsigned long previousMillis = 0;
 const unsigned long interval = 1000; // Interval d'une seconde
 
@@ -27,6 +26,9 @@ void setup() {
   M5.begin();
  // menuPrincipalSetup();
   Serial.begin(115200);
+ // Initialiser SPIFFS et la base de données
+  identification.initSPIFFS();
+  identification.initBDD();
   systemM5.drawImageRGB(TCLimage_RGB, /*TCLimage_width*/320, /*TCLimage_height*/240, 0, 0);
   delay(2000);
   menu.clear();
