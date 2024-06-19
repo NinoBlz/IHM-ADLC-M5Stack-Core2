@@ -19,7 +19,7 @@ void ModifierPOI::SetupOneWire()
     while (!Serial)
         ;
 
-    // Search the 1-Wire bus for a connected device.
+    // Rechercher un EEPROM connecté sur le bus 1-Wire.
     byte serialNb[8];
     oneWire.target_search(DS2431::ONE_WIRE_FAMILY_CODE);
     if (!oneWire.search(serialNb))
@@ -30,7 +30,7 @@ void ModifierPOI::SetupOneWire()
         return;
     }
 
-    // Check serial number CRC
+    // Vérifier numéro de serie CRC
     if (oneWire.crc8(serialNb, 7) != serialNb[7])
     {
         Serial.println("A DS2431 was found but the serial number CRC is invalid.");
@@ -43,10 +43,10 @@ void ModifierPOI::SetupOneWire()
     printBuffer(serialNb, 8);
     Serial.println("");
 
-    // Initialize DS2431 object
+    // Initialiser DS2431 
     eeprom.begin(serialNb);
 
-    // Read all memory content
+    // Lire tout le contenu de la mémoire
     byte data[128];
     eeprom.read(0, data, sizeof(data));
 
@@ -56,9 +56,10 @@ void ModifierPOI::SetupOneWire()
 
     // lecture des 8 premier bit de l'EEPROM afin de la stocker dans la variable
     // DataPOI
+    
     byte newData[8]; // Déclaration du tableau de 8 octets
 
-    // Read the first 8 bytes from the memory contents
+    // Lire les huit premiers octets du contenu de la mémoire
     eeprom.read(0, newData, 8);
 
     // char charDataPOI[9]; // Tableau de caractères pour stocker "12345678" + caractère nul
@@ -70,10 +71,7 @@ void ModifierPOI::SetupOneWire()
 
     Serial.print("charDataPOI: ");
     Serial.println(charDataPOI);
-    DataPOI =
-
-        //
-        EEPROMConnecter = true;
+    EEPROMConnecter = true;
     Serial.println("EEPROMConnecter = true");
 }
 

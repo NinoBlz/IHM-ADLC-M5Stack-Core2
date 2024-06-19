@@ -8,7 +8,7 @@ void POImanager::setup()
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_GREEN); // Bouton Identification
     M5.Lcd.setTextColor(TFT_WHITE);
     M5.Lcd.setTextSize(2);
-    M5.Lcd.drawString("MOdifier ", 60, buttonYStart + 10);
+    M5.Lcd.drawString("Modifier ", 60, buttonYStart + 10);
 
     // Affichage des boutons
     M5.Lcd.fillRoundRect(20, buttonYStart, buttonWidth, buttonHeight, 8, TFT_GREEN); // Bouton Identification
